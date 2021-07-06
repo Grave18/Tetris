@@ -57,34 +57,36 @@ int main()
 
 			ClearBackground(RAYWHITE);
 
+			Rectangle rec_struct{};
+			rec_struct.width = sector_size;
+			rec_struct.height = sector_size;
+
+			// Отрисовка элементов фигуры
 			for (int i = 0; i < player.figure.size; ++i)
 			{
-				int tmp_pos_x, tmp_pos_y;
+				int tmp_pos_x = player.x + player.figure[i].x;
+				int tmp_pos_y = player.y + player.figure[i].y;
 
-				tmp_pos_x = player.x + player.figure.recs[i].x;
-				tmp_pos_y = player.y + player.figure.recs[i].y;
+				rec_struct.x = tmp_pos_x * sector_size;
+				rec_struct.y = tmp_pos_y * sector_size;
 
-
-				//TODO: разобраться с этой структурой, может вытащить ее из класса?
-				player.structure.x = tmp_pos_x * sector_size;
-				player.structure.y = tmp_pos_y * sector_size;
-				player.structure.width = sector_size;
-				player.structure.height = sector_size;
-
-				DrawRectangleRounded(player.structure, 0.5f, 1, player.figure.recs[i].color);
-				DrawRectangleRoundedLines(player.structure, 0.5f, 1, 3.0f, player.figure.recs[i].outline_color);
+				DrawRectangleRounded(rec_struct, 0.5f, 1, player.figure[i].color);
+				DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, player.figure[i].outline_color);
 			}
-
-			// Отрисовка квадратов на уровне
-			for (int i = 0; i < world.arr.size(); ++i)
+			
+			// Отрисовка элементов уровня
+			for (int i = 0; i < world.size; ++i)
 			{
-				player.structure.x = world.arr[i].x * sector_size;
-				player.structure.y = world.arr[i].y * sector_size;
-				player.structure.width = sector_size;
-				player.structure.height = sector_size;
+				if(world.GetElement(i).is_occupied)
+				{
+					Rec rec = Rec(world.GetElement(i));
 
-				DrawRectangleRounded(player.structure, 0.5f, 1, world.arr[i].color);
-				DrawRectangleRoundedLines(player.structure, 0.5f, 1, 3.0f, world.arr[i].outline_color);
+					rec_struct.x = rec.x * sector_size;
+					rec_struct.y = rec.y * sector_size;
+
+					DrawRectangleRounded(rec_struct, 0.5f, 1, rec.color);
+					DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, rec.outline_color);
+				}
 			}
 
 			// Debug
@@ -92,7 +94,7 @@ int main()
 				+ "\n left: " + std::to_string(player.CanMove("left"))
 				+ "\n right: " + std::to_string(player.CanMove("right"))
 				+ "\n down: " + std::to_string(player.CanMove("down"))
-				+ "\n map size: " + std::to_string(world.arr.size());
+				+ "\n map size: " + std::to_string(world.size);
 			DrawText(debug.c_str(), 10, 10, 30, RED);
 
 		EndDrawing();

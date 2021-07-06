@@ -10,7 +10,6 @@ class Player
 public:
 	int x;
 	int y;
-	Rectangle structure;
 	World* world;
 	Figure figure;
 

@@ -9,10 +9,15 @@
 class Figure
 {
 public:
-	std::vector<Rec> recs;
 	int size;
 
+private:
+	std::vector<Rec> recs;
+
+public:
 	Figure();
 
 	Figure(std::vector<Rec> rectangles, Color color = BLACK, Color outline_color = BLACK);
+
+	Rec& operator[](unsigned int index);
 };

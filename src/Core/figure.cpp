@@ -3,7 +3,7 @@
 Figure::Figure()
 	: recs{ 0 } {}
 
-Figure::Figure(std::vector<Rec> rectangles, Color color, Color outline_color) //Color color = BLACK, Color outline_color = BLACK
+Figure::Figure(std::vector<Rec> rectangles, Color color, Color outline_color) //color = BLACK, outline_color = BLACK
 	: recs{ rectangles }
 {
 	size = recs.size();
@@ -13,4 +13,9 @@ Figure::Figure(std::vector<Rec> rectangles, Color color, Color outline_color) //
 		recs[i].color = color;
 		recs[i].outline_color = outline_color;
 	}
+}
+
+Rec& Figure::operator[](unsigned int index)
+{
+	return recs[index];
 }
