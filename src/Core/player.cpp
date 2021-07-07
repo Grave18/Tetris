@@ -52,7 +52,7 @@ bool Player::CanMove(const char* direction)
 
 		if ((direction == "right"))
 		{
-			if ((world_x + 1) >= world->bound_x || world->GetElement(world_x + 1, world_y).is_occupied)
+			if ((world_x + 1) >= world->bound_x || world->IsElementOccupied(world_x + 1, world_y))
 			{
 				return false;
 			}
@@ -60,7 +60,7 @@ bool Player::CanMove(const char* direction)
 
 		if (direction == "left")
 		{
-			if ((world_x - 1) < 0 || world->GetElement(world_x - 1, world_y).is_occupied)
+			if ((world_x - 1) < 0 || world->IsElementOccupied(world_x - 1, world_y))
 			{
 				return false;
 			}
@@ -68,7 +68,7 @@ bool Player::CanMove(const char* direction)
 
 		if (direction == "down")
 		{
-			if ((world_y + 1) >= world->bound_y || world->GetElement(world_x, world_y + 1).is_occupied)
+			if ((world_y + 1) >= world->bound_y || world->IsElementOccupied(world_x, world_y + 1))
 			{
 				LoadToWorldArr();
 
@@ -82,4 +82,22 @@ bool Player::CanMove(const char* direction)
 	}
 
 	return true;
+}
+
+void Player::RotateFigure()
+{
+	for (int i = 0; i < figure.size; ++i)
+	{
+		if(figure.figure_type != FigureEnum::O)
+		{
+			// ѕоворот левосторонней системы против часовой
+			// x' =  x * cos(90) + y * sin(90)  // sin(90) = 1, cos(90) = 0;
+			// y' = -x * sin(90) + y * cos(90)
+			int x = figure[i].x;
+			int y = figure[i].y;
+
+			figure[i].x = y;
+			figure[i].y = -x;
+		}
+	}
 }

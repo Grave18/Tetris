@@ -8,20 +8,42 @@ World::World(int bound_x, int bound_y)
 	arr.resize(size);
 }
 
-void World::SetElement(Rec& element)
+void World::ClearWorld()
 {
-	// Переводим двумерный индекс массида в одномерный
-	arr[static_cast<long long>(element.x) + static_cast<long long>(element.y) * static_cast<long long>(bound_x)] = element;
-}
-
-// Обращение как к двумерному массиву
-Rec& World::GetElement(unsigned int x, unsigned int y)
-{
-	return arr[static_cast<long long>(x) + static_cast<long long>(y) * static_cast<long long>(bound_x)];
+	for (auto& elem : arr)
+	{
+		if(elem.is_occupied)
+			elem = Rec();
+	}
 }
 
 // Обращение как к одномерному массиву
-Rec& World::GetElement(unsigned int element)
+Rec& World::GetElement(int element)
 {
-	return arr[element];
+	if (element <= arr.size())
+		return arr[element];
+	else
+		throw("Element at this number doesn't exist");
 }
+
+void World::SetElement(Rec& element)
+{
+	// Переводим двумерный индекс массива в одномерный
+	int element_number = element.x + element.y * bound_x;
+
+	if(element_number <= arr.size())
+		arr[element_number] = element;
+	else
+		throw("Element at this number doesn't exist");
+}
+
+// Обращение как к двумерному массиву
+bool World::IsElementOccupied(int x, int y)
+{
+	if ((x >= 0 && x <= bound_x) && (y >= 0  && y <= bound_y))
+		return arr[x + y * bound_x].is_occupied;
+	else
+		return false;
+	
+}
+

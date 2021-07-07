@@ -28,15 +28,20 @@ int main()
 	{
 		using namespace std::string_literals; // дл€ ""s
 
-		// ”правление
+		// ”правление движением
 		if (IsKeyPressed(KEY_UP) && player.CanMove("up"))
 			player.y -= 1;
-		if (IsKeyDown(KEY_DOWN) && player.CanMove("down") )
+		if (IsKeyPressed(KEY_DOWN) && player.CanMove("down") )
 			player.y += 1;
 		if (IsKeyPressed(KEY_RIGHT) && player.CanMove("right") )
 			player.x += 1;
 		if (IsKeyPressed(KEY_LEFT) && player.CanMove("left"))
 			player.x -= 1;
+		if (IsKeyPressed(KEY_SPACE))
+			player.RotateFigure();
+
+		if (IsKeyPressed(KEY_BACKSPACE))
+			world.ClearWorld();
 
 		if (IsKeyPressed(KEY_O))
 			player.ChangeFigure(FigureEnum::O);
@@ -93,8 +98,7 @@ int main()
 			std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
 				+ "\n left: " + std::to_string(player.CanMove("left"))
 				+ "\n right: " + std::to_string(player.CanMove("right"))
-				+ "\n down: " + std::to_string(player.CanMove("down"))
-				+ "\n map size: " + std::to_string(world.size);
+				+ "\n down: " + std::to_string(player.CanMove("down"));
 			DrawText(debug.c_str(), 10, 10, 30, RED);
 
 		EndDrawing();

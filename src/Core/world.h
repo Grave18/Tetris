@@ -18,7 +18,9 @@ private:
 public:
 	World(int bound_x, int bound_y);
 
+
+	void ClearWorld();
 	void SetElement(Rec& element);
-	Rec& GetElement(unsigned int x, unsigned int y);
-	Rec& GetElement(unsigned int element);
+	Rec& GetElement(int element);
+	bool IsElementOccupied(int x, int y);
 };

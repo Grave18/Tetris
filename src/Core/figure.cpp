@@ -3,8 +3,8 @@
 Figure::Figure()
 	: recs{ 0 } {}
 
-Figure::Figure(std::vector<Rec> rectangles, Color color, Color outline_color) //color = BLACK, outline_color = BLACK
-	: recs{ rectangles }
+Figure::Figure(std::vector<Rec> rectangles, FigureEnum type, Color color, Color outline_color) //color = BLACK, outline_color = BLACK
+	: recs{ rectangles }, figure_type{ type }
 {
 	size = recs.size();
 

@@ -21,4 +21,5 @@ private:
 public:
 	void ChangeFigure(FigureEnum figures);
 	bool CanMove(const char* direction);
+	void RotateFigure();
 };
