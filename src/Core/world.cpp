@@ -3,7 +3,7 @@
 World::World(int bound_x, int bound_y)
 	: bound_x{ bound_x }, bound_y{ bound_y }, arr{ }
 {
-	// TODO: Пофиксить месево, возможно заменить вектор на аррей
+	// TODO: Пофиксить месево, возможно заменить вектор на аррей лол
 	size = bound_x * bound_y;
 	arr.resize(size);
 }

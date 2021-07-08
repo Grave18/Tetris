@@ -1,6 +1,6 @@
 /*
-*Эта игра классический тетрис, написана с помощью RayLib 3
-*Rec(значит rectangle) - минимальная единица, из чего состоит фигура и уровень
+*Р­С‚Р° РёРіСЂР° РєР»Р°СЃСЃРёС‡РµСЃРєРёР№ С‚РµС‚СЂРёСЃ, РЅР°РїРёСЃР°РЅР° СЃ РїРѕРјРѕС‰СЊСЋ RayLib 3
+*Rec(Р·РЅР°С‡РёС‚ rectangle) - РјРёРЅРёРјР°Р»СЊРЅР°В¤ РµРґРёРЅРёС†Р°, РёР· С‡РµРіРѕ СЃРѕСЃС‚РѕРёС‚ С„РёРіСѓСЂР° Рё СѓСЂРѕРІРµРЅСЊ
 */ 
 
 #include "Game.h"
@@ -26,9 +26,9 @@ int main()
 
 	while (!WindowShouldClose())
 	{
-		using namespace std::string_literals; // для ""s
+		using namespace std::string_literals; // РґР»В¤ ""s
 
-		// Управление движением
+		// вЂќРїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёРµРј
 		if (IsKeyPressed(KEY_UP) && player.CanMove("up"))
 			player.y -= 1;
 		if (IsKeyPressed(KEY_DOWN) && player.CanMove("down") )
@@ -66,7 +66,7 @@ int main()
 			rec_struct.width = sector_size;
 			rec_struct.height = sector_size;
 
-			// Отрисовка элементов фигуры
+			// СњС‚СЂРёСЃРѕРІРєР° СЌР»РµРјРµРЅС‚РѕРІ С„РёРіСѓСЂС‹
 			for (int i = 0; i < player.figure.size; ++i)
 			{
 				int tmp_pos_x = player.x + player.figure[i].x;
@@ -79,7 +79,7 @@ int main()
 				DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, player.figure[i].outline_color);
 			}
 			
-			// Отрисовка элементов уровня
+			// СњС‚СЂРёСЃРѕРІРєР° СЌР»РµРјРµРЅС‚РѕРІ СѓСЂРѕРІРЅВ¤
 			for (int i = 0; i < world.size; ++i)
 			{
 				if(world.GetElement(i).is_occupied)

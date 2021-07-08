@@ -1,4 +1,4 @@
-#include "player.h"
+п»ї#include "player.h"
 
 Player::Player(World* world, FigureEnum figure)
 	: x{ 0 }, y{ 0 }, world{ world }
@@ -8,11 +8,11 @@ Player::Player(World* world, FigureEnum figure)
 
 void Player::LoadToWorldArr()
 {
-	// Загружаем фигуру в массив карты
+	// Р—Р°РіСЂСѓР¶Р°РµРј С„РёРіСѓСЂСѓ РІ РјР°СЃСЃРёРІ РєР°СЂС‚С‹
 	for (int i = 0; i < figure.size; ++i)
 	{
 		Rec rec = Rec(figure[i]);
-		// Переводим локальные координаты в глобальные
+		// РџРµСЂРµРІРѕРґРёРј Р»РѕРєР°Р»СЊРЅС‹Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ РІ РіР»РѕР±Р°Р»СЊРЅС‹Рµ Р»РѕР»
 		rec.x += x;
 		rec.y += y;
 		rec.is_occupied = true;
@@ -41,14 +41,14 @@ void Player::ChangeFigure(FigureEnum figures)
 
 bool Player::CanMove(const char* direction)
 {
-	// Сканируем rec сверху вниз, слева направо
+	// РЎРєР°РЅРёСЂСѓРµРј rec СЃРІРµСЂС…Сѓ РІРЅРёР·, СЃР»РµРІР° РЅР°РїСЂР°РІРѕ
 	for (int i = 0; i < figure.size; ++i)
 	{
-		// Координаты квадратов, переведенные в мировые
+		// РљРѕРѕСЂРґРёРЅР°С‚С‹ РєРІР°РґСЂР°С‚РѕРІ, РїРµСЂРµРІРµРґРµРЅРЅС‹Рµ РІ РјРёСЂРѕРІС‹Рµ
 		int world_x = x + figure[i].x;
 		int world_y = y + figure[i].y;
 
-		// TODO: сделать перечисление up, down и тд.
+		// TODO: СЃРґРµР»Р°С‚СЊ РїРµСЂРµС‡РёСЃР»РµРЅРёРµ up, down Рё С‚Рґ.
 
 		if ((direction == "right"))
 		{
@@ -72,7 +72,7 @@ bool Player::CanMove(const char* direction)
 			{
 				LoadToWorldArr();
 
-				// Возвращаем фигуру в начало
+				// Р’РѕР·РІСЂР°С‰Р°РµРј С„РёРіСѓСЂСѓ РІ РЅР°С‡Р°Р»Рѕ
 				x = 0;
 				y = 0;
 
@@ -90,7 +90,7 @@ void Player::RotateFigure()
 	{
 		if(figure.figure_type != FigureEnum::O)
 		{
-			// Поворот левосторонней системы против часовой
+			// РџРѕРІРѕСЂРѕС‚ Р»РµРІРѕСЃС‚РѕСЂРѕРЅРЅРµР№ СЃРёСЃС‚РµРјС‹ РїСЂРѕС‚РёРІ С‡Р°СЃРѕРІРѕР№
 			// x' =  x * cos(90) + y * sin(90)  // sin(90) = 1, cos(90) = 0;
 			// y' = -x * sin(90) + y * cos(90)
 			int x = figure[i].x;
