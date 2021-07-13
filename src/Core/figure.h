@@ -22,4 +22,5 @@ public:
 	Figure(std::vector<Rec> rectangles, FigureEnum type, Color color = BLACK, Color outline_color = BLACK);
 
 	Rec& operator[](unsigned int index);
+	const Rec& operator[](unsigned int index) const;
 };

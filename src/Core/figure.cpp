@@ -19,3 +19,8 @@ Rec& Figure::operator[](unsigned int index)
 {
 	return recs[index];
 }
+
+const Rec& Figure::operator[](unsigned int index) const
+{
+	return recs[index];
+}
