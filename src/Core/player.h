@@ -10,16 +10,19 @@ class Player
 public:
 	int x;
 	int y;
-	Rectangle structure;
 	World* world;
 	Figure figure;
 
+	Player(World* world);
 	Player(World* world, FigureEnum figure);
 
 private:
-	void LoadToWorldArr();
+	void LoadFigureToWorldArr();
+	void ReturnFigureToStartPosition();
 
 public:
 	void ChangeFigure(FigureEnum figures);
+	void ChangeFigureRandom();
 	bool CanMove(const char* direction);
+	void RotateFigure();
 };

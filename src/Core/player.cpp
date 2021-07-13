@@ -1,23 +1,37 @@
-#include "player.h"
+п»ї#include "player.h"
+#include "random_number.h"
 
-Player::Player(World* world, FigureEnum figure)
-	: x{ 0 }, y{ 0 }, structure{ 0 }, world{ world }
+Player::Player(World* world)
+	: x{ 0 }, y{ 0 }, world{ world }
 {
-	ChangeFigure(figure);
+	ChangeFigureRandom();
+	ReturnFigureToStartPosition();
 }
 
-void Player::LoadToWorldArr()
+Player::Player(World* world, FigureEnum figure)
+	: x{ 0 }, y{ 0 }, world{ world }
 {
-	// Загружаем фигуру в массив карты
+	ChangeFigure(figure);
+	ReturnFigureToStartPosition();
+}
+
+void Player::LoadFigureToWorldArr()
+{
+	//TODO: Р’СЃРµ РЅРµ С‚Р°Рє, РЅР°РґРѕ Р·Р°РјРµРЅРёС‚СЊ РѕС‚РїСЂР°РІРєСѓ РѕР±СЉРµРєС‚РѕРІ РЅР° РѕС‚РїСЂР°РІРєСѓ РґР°РЅРЅС‹С…, РЅР°РІРµСЂРЅРѕ
+	// Р—Р°РіСЂСѓР¶Р°РµРј С„РёРіСѓСЂСѓ РІ РјР°СЃСЃРёРІ РєР°СЂС‚С‹
 	for (int i = 0; i < figure.size; ++i)
 	{
-		Rec rec = Rec(figure.recs[i]);
-		rec.x += x;
-		rec.y += y;
-
-		//TODO: проверка не содержит ли массив такой же элемент
-		world->arr.push_back(rec);
+		world->SetElementByPosition(figure[i].x + x, figure[i].y + y, figure[i].color);
 	}
+
+	world->ScanForCompleteRows();
+}
+
+// Р’РѕР·РІСЂР°С‰Р°РµРј С„РёРіСѓСЂСѓ РІ РЅР°С‡Р°Р»Рѕ Рё РјРµРЅСЏРµРј РЅР° СЂР°РЅРґРѕРјРЅСѓСЋ
+void Player::ReturnFigureToStartPosition()
+{
+	x = 4;
+	y = 1;
 }
 
 void Player::ChangeFigure(FigureEnum figures)
@@ -38,79 +52,70 @@ void Player::ChangeFigure(FigureEnum figures)
 		figure = Figures::t;
 }
 
+void Player::ChangeFigureRandom()
+{
+	RandomNumber::ResetRandomNumber();
+	ChangeFigure((FigureEnum)RandomNumber::GetRandomNumber(0, (int)FigureEnum::MAX_ELEMENT - 1));
+}
+
 bool Player::CanMove(const char* direction)
 {
-	// Сканируем rec сверху вниз, слева направо
+	// РЎРєР°РЅРёСЂСѓРµРј С„РёРіСѓСЂСѓ СЃРІРµСЂС…Сѓ РІРЅРёР·, СЃР»РµРІР° РЅР°РїСЂР°РІРѕ
 	for (int i = 0; i < figure.size; ++i)
 	{
-		// Координаты квадратов, переведенные в мировые
-		int world_x, world_y;
+		// РљРѕРѕСЂРґРёРЅР°С‚С‹ РєРІР°РґСЂР°С‚РѕРІ С„РёРіСѓСЂС‹, РїРµСЂРµРІРµРґРµРЅРЅС‹Рµ РІ РјРёСЂРѕРІС‹Рµ
+		int world_x = x + figure[i].x;
+		int world_y = y + figure[i].y;
 
-		world_x = x + figure.recs[i].x;
-		world_y = y + figure.recs[i].y;
-
-		// TODO: сделать перечисление up, down и тд.
+		// TODO: СЃРґРµР»Р°С‚СЊ РїРµСЂРµС‡РёСЃР»РµРЅРёРµ up, down Рё С‚Рґ.
 
 		if ((direction == "right"))
 		{
-			if ((world_x + 1) >= world->bound_x)
+			if ((world_x + 1) >= world->bound_x || world->IsElementOccupied(world_x + 1, world_y))
 			{
 				return false;
-			}
-
-			for (int j = 0; j < world->arr.size(); ++j)
-			{
-				if ((world_x + 1) == world->arr[j].x && world_y == world->arr[j].y)
-				{
-					return false;
-				}
 			}
 		}
 
 		if (direction == "left")
 		{
-			if ((world_x - 1) < 0)
+			if ((world_x - 1) < 0 || world->IsElementOccupied(world_x - 1, world_y))
 			{
 				return false;
-			}
-
-			for (int j = 0; j < world->arr.size(); ++j)
-			{
-				if ((world_x - 1) == world->arr[j].x && world_y == world->arr[j].y)
-				{
-					return false;
-				}
 			}
 		}
 
 		if (direction == "down")
 		{
-			if ((world_y + 1) >= world->bound_y)
+			if ((world_y + 1) >= world->bound_y || world->IsElementOccupied(world_x, world_y + 1))
 			{
-				LoadToWorldArr();
-
-				// Возвращаем фигуру в начало
-				x = 0;
-				y = 0;
+				LoadFigureToWorldArr();
+				ChangeFigureRandom();
+				ReturnFigureToStartPosition();
 
 				return false;
-			}
-
-			for (int j = 0; j < world->arr.size(); ++j)
-			{
-				if (world_x == world->arr[j].x && (world_y + 1) == world->arr[j].y)
-				{
-					LoadToWorldArr();
-
-					// Возвращаем фигуру в начало
-					x = 0;
-					y = 0;
-
-					return false;
-				}
 			}
 		}
 	}
 
 	return true;
+}
+
+void Player::RotateFigure()
+{
+	if (figure.figure_type != FigureEnum::O && (x - 1) > -1 && (x + 1) < world->bound_x)
+	{
+		for (int i = 0; i < figure.size; ++i)
+		{
+		
+			// РџРѕРІРѕСЂРѕС‚ Р»РµРІРѕСЃС‚РѕСЂРѕРЅРЅРµР№ СЃРёСЃС‚РµРјС‹ РїСЂРѕС‚РёРІ С‡Р°СЃРѕРІРѕР№
+			// x' =  x * cos(90) + y * sin(90)  // sin(90) = 1, cos(90) = 0;
+			// y' = -x * sin(90) + y * cos(90)
+			int local_x = figure[i].y;
+			int local_y = -figure[i].x;
+			
+			figure[i].x = local_x;
+			figure[i].y = local_y;
+		}
+	}
 }

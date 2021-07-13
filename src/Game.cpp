@@ -1,6 +1,7 @@
 /*
-*Эта игра классический тетрис, написана с помощью RayLib 3
-*Rec(значит rectangle) - минимальная единица, из чего состоит фигура и уровень
+* Р­С‚Р° РёРіСЂР° РєР»Р°СЃСЃРёС‡РµСЃРєРёР№ С‚РµС‚СЂРёСЃ, РЅР°РїРёСЃР°РЅР° СЃ РїРѕРјРѕС‰СЊСЋ RayLib 3.8
+* Rec(Р·РЅР°С‡РёС‚ rectangle) - РјРёРЅРёРјР°Р»СЊРЅР°СЏ РµРґРёРЅРёС†Р°, РёР· С‡РµРіРѕ СЃРѕСЃС‚РѕРёС‚ С„РёРіСѓСЂР° Рё СѓСЂРѕРІРµРЅСЊ
+* Figure(С„РёРіСѓСЂР°) - С‚Рѕ, С‡РµРј СѓРїСЂР°РІР»СЏРµС‚ РёРіСЂРѕРє
 */ 
 
 #include "Game.h"
@@ -10,90 +11,121 @@ const int level_height = 20;
 const int sector_size = 50;
 const int scr_width = level_width * sector_size;
 const int scr_height = level_height * sector_size;
-const char* title = "Tetris";
+const char* title =  "Tetris";
+
+static bool isDebugging = false;
 
 int main()
 {
 	InitWindow(scr_width, scr_height, title);
 	SetTargetFPS(60);
-
 	
 	int bound_x = scr_width / sector_size;
 	int bound_y = scr_height / sector_size;
 
 	World world = World(bound_x, bound_y);
-	Player player = Player(&world, FigureEnum::I);
+	Player player = Player(&world);
 
+	float pos_y = 0;
 	while (!WindowShouldClose())
 	{
-		using namespace std::string_literals; // для ""s
+		using namespace std::string_literals; // РґР»СЏ ""s
 
-		// Управление
-		if (IsKeyPressed(KEY_UP) && player.CanMove("up"))
-			player.y -= 1;
-		if (IsKeyDown(KEY_DOWN) && player.CanMove("down") )
-			player.y += 1;
+		float dt{ GetFrameTime() };
+		float speed{ 0.0f };
+
+		// РЈРїСЂР°РІР»РµРЅРёРµ РґРІРёР¶РµРЅРёРµРј
+		if (IsKeyDown(KEY_DOWN))
+			speed = 10.0f;
+		else
+			speed = 2.5f;
+		
+		pos_y += speed * dt;
+		player.y = pos_y;
+
+		if (player.CanMove("down"))
+			player.y = pos_y;
+		else
+			pos_y = 0.0f;
+
+		
 		if (IsKeyPressed(KEY_RIGHT) && player.CanMove("right") )
 			player.x += 1;
 		if (IsKeyPressed(KEY_LEFT) && player.CanMove("left"))
 			player.x -= 1;
+		if (IsKeyPressed(KEY_UP))
+			player.RotateFigure();
 
-		if (IsKeyPressed(KEY_O))
-			player.ChangeFigure(FigureEnum::O);
-		if (IsKeyPressed(KEY_I))
-			player.ChangeFigure(FigureEnum::I);
-		if (IsKeyPressed(KEY_S))
-			player.ChangeFigure(FigureEnum::S);
-		if (IsKeyPressed(KEY_Z))
-			player.ChangeFigure(FigureEnum::Z);
-		if (IsKeyPressed(KEY_L))
-			player.ChangeFigure(FigureEnum::L);
-		if (IsKeyPressed(KEY_J))
-			player.ChangeFigure(FigureEnum::J);
-		if (IsKeyPressed(KEY_T))
-			player.ChangeFigure(FigureEnum::T);
+		// Debug СѓРїСЂР°РІР»РµРЅРёРµ
+		if (IsKeyPressed(KEY_D))
+			isDebugging = !isDebugging;
+
+		if(isDebugging)
+		{
+			if (IsKeyPressed(KEY_O))
+				player.ChangeFigure(FigureEnum::O);
+			else if (IsKeyPressed(KEY_I))
+				player.ChangeFigure(FigureEnum::I);
+			else if (IsKeyPressed(KEY_S))
+				player.ChangeFigure(FigureEnum::S);
+			else if (IsKeyPressed(KEY_Z))
+				player.ChangeFigure(FigureEnum::Z);
+			else if (IsKeyPressed(KEY_L))
+				player.ChangeFigure(FigureEnum::L);
+			else if (IsKeyPressed(KEY_J))
+				player.ChangeFigure(FigureEnum::J);
+			else if (IsKeyPressed(KEY_T))
+				player.ChangeFigure(FigureEnum::T);
+
+			if (IsKeyPressed(KEY_BACKSPACE))
+				world.ClearWorld();
+		}
 
 		BeginDrawing();
 
 			ClearBackground(RAYWHITE);
 
+			Rectangle rec_struct{};
+			rec_struct.width = sector_size;
+			rec_struct.height = sector_size;
+
+			// РћС‚СЂРёСЃРѕРІРєР° СЌР»РµРјРµРЅС‚РѕРІ С„РёРіСѓСЂС‹
 			for (int i = 0; i < player.figure.size; ++i)
 			{
-				int tmp_pos_x, tmp_pos_y;
+				int tmp_pos_x = player.x + player.figure[i].x;
+				int tmp_pos_y = player.y + player.figure[i].y;
 
-				tmp_pos_x = player.x + player.figure.recs[i].x;
-				tmp_pos_y = player.y + player.figure.recs[i].y;
+				rec_struct.x = tmp_pos_x * sector_size;
+				rec_struct.y = tmp_pos_y * sector_size;
 
-
-				//TODO: разобраться с этой структурой, может вытащить ее из класса?
-				player.structure.x = tmp_pos_x * sector_size;
-				player.structure.y = tmp_pos_y * sector_size;
-				player.structure.width = sector_size;
-				player.structure.height = sector_size;
-
-				DrawRectangleRounded(player.structure, 0.5f, 1, player.figure.recs[i].color);
-				DrawRectangleRoundedLines(player.structure, 0.5f, 1, 3.0f, player.figure.recs[i].outline_color);
+				DrawRectangleRounded(rec_struct, 0.5f, 1, player.figure[i].color);
+				DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, player.figure[i].outline_color);
 			}
-
-			// Отрисовка квадратов на уровне
-			for (int i = 0; i < world.arr.size(); ++i)
+			
+			// РћС‚СЂРёСЃРѕРІРєР° СЌР»РµРјРµРЅС‚РѕРІ СѓСЂРѕРІРЅСЏ
+			for (int i = 0; i < world.size; ++i)
 			{
-				player.structure.x = world.arr[i].x * sector_size;
-				player.structure.y = world.arr[i].y * sector_size;
-				player.structure.width = sector_size;
-				player.structure.height = sector_size;
+				if(world.GetElement(i).is_occupied)
+				{
+					Rec rec = Rec(world.GetElement(i));
 
-				DrawRectangleRounded(player.structure, 0.5f, 1, world.arr[i].color);
-				DrawRectangleRoundedLines(player.structure, 0.5f, 1, 3.0f, world.arr[i].outline_color);
+					rec_struct.x = rec.x * sector_size;
+					rec_struct.y = rec.y * sector_size;
+
+					DrawRectangleRounded(rec_struct, 0.5f, 1, rec.color);
+					DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, rec.outline_color);
+				}
 			}
 
 			// Debug
-			std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
-				+ "\n left: " + std::to_string(player.CanMove("left"))
-				+ "\n right: " + std::to_string(player.CanMove("right"))
-				+ "\n down: " + std::to_string(player.CanMove("down"))
-				+ "\n map size: " + std::to_string(world.arr.size());
-			DrawText(debug.c_str(), 10, 10, 30, RED);
+			if(isDebugging)
+			{
+				std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
+					+ "\n left: " + std::to_string(player.CanMove("left"))
+					+ "\n right: " + std::to_string(player.CanMove("right"))
+					+ "\n down: " + std::to_string(player.CanMove("down"));
+				DrawText(debug.c_str(), 10, 10, 30, RED);
+			}
 
 		EndDrawing();
 	}
