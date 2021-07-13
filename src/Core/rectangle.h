@@ -12,4 +12,6 @@ public:
 	Color outline_color;
 
 	Rec(int x = 0, int y = 0, Color color = BLACK, Color outline_color = BLACK);
+
+	void Clear();
 };
