@@ -1,24 +1,37 @@
 ﻿#include "player.h"
+#include "random_number.h"
+
+Player::Player(World* world)
+	: x{ 0 }, y{ 0 }, world{ world }
+{
+	ChangeFigureRandom();
+	ReturnFigureToStartPosition();
+}
 
 Player::Player(World* world, FigureEnum figure)
 	: x{ 0 }, y{ 0 }, world{ world }
 {
 	ChangeFigure(figure);
+	ReturnFigureToStartPosition();
 }
 
-void Player::LoadToWorldArr()
+void Player::LoadFigureToWorldArr()
 {
+	//TODO: Все не так, надо заменить отправку объектов на отправку данных, наверно
 	// Загружаем фигуру в массив карты
 	for (int i = 0; i < figure.size; ++i)
 	{
-		Rec rec = Rec(figure[i]);
-		// Переводим локальные координаты в глобальные лол
-		rec.x += x;
-		rec.y += y;
-		rec.is_occupied = true;
-
-		world->SetElement(rec);
+		world->SetElementByPosition(figure[i].x + x, figure[i].y + y, figure[i].color);
 	}
+
+	world->ScanForCompleteRows();
+}
+
+// Возвращаем фигуру в начало и меняем на рандомную
+void Player::ReturnFigureToStartPosition()
+{
+	x = 4;
+	y = 1;
 }
 
 void Player::ChangeFigure(FigureEnum figures)
@@ -39,12 +52,18 @@ void Player::ChangeFigure(FigureEnum figures)
 		figure = Figures::t;
 }
 
+void Player::ChangeFigureRandom()
+{
+	RandomNumber::ResetRandomNumber();
+	ChangeFigure((FigureEnum)RandomNumber::GetRandomNumber(0, (int)FigureEnum::MAX_ELEMENT - 1));
+}
+
 bool Player::CanMove(const char* direction)
 {
-	// Сканируем rec сверху вниз, слева направо
+	// Сканируем фигуру сверху вниз, слева направо
 	for (int i = 0; i < figure.size; ++i)
 	{
-		// Координаты квадратов, переведенные в мировые
+		// Координаты квадратов фигуры, переведенные в мировые
 		int world_x = x + figure[i].x;
 		int world_y = y + figure[i].y;
 
@@ -70,11 +89,9 @@ bool Player::CanMove(const char* direction)
 		{
 			if ((world_y + 1) >= world->bound_y || world->IsElementOccupied(world_x, world_y + 1))
 			{
-				LoadToWorldArr();
-
-				// Возвращаем фигуру в начало
-				x = 0;
-				y = 0;
+				LoadFigureToWorldArr();
+				ChangeFigureRandom();
+				ReturnFigureToStartPosition();
 
 				return false;
 			}
@@ -86,18 +103,19 @@ bool Player::CanMove(const char* direction)
 
 void Player::RotateFigure()
 {
-	for (int i = 0; i < figure.size; ++i)
+	if (figure.figure_type != FigureEnum::O && (x - 1) > -1 && (x + 1) < world->bound_x)
 	{
-		if(figure.figure_type != FigureEnum::O)
+		for (int i = 0; i < figure.size; ++i)
 		{
+		
 			// Поворот левосторонней системы против часовой
 			// x' =  x * cos(90) + y * sin(90)  // sin(90) = 1, cos(90) = 0;
 			// y' = -x * sin(90) + y * cos(90)
-			int x = figure[i].x;
-			int y = figure[i].y;
-
-			figure[i].x = y;
-			figure[i].y = -x;
+			int local_x = figure[i].y;
+			int local_y = -figure[i].x;
+			
+			figure[i].x = local_x;
+			figure[i].y = local_y;
 		}
 	}
 }
