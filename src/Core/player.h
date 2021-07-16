@@ -7,6 +7,10 @@
 
 class Player
 {
+private:
+	// Костыль, для обеспечения плавного движения вниз
+	float float_y;
+	float fall_speed;
 public:
 	int x;
 	int y;
@@ -23,6 +27,9 @@ private:
 public:
 	void ChangeFigure(FigureEnum figures);
 	void ChangeFigureRandom();
-	bool CanMove(const char* direction);
+	bool Move(const char* direction);
+	void Fall(float dt);
+	void SpeedUp();
+	void SpeedDown();
 	void RotateFigure();
 };

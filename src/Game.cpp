@@ -34,27 +34,20 @@ int main()
 		float dt{ GetFrameTime() };
 		float speed{ 0.0f };
 
-		// Управление движением
-		if (IsKeyDown(KEY_DOWN))
-			speed = 10.0f;
-		else
-			speed = 2.5f;
-		
-		pos_y += speed * dt;
-		player.y = pos_y;
+		player.Fall(dt);
 
-		if (player.CanMove("down"))
-			player.y = pos_y;
-		else
-			pos_y = 0.0f;
-
-		
-		if (IsKeyPressed(KEY_RIGHT) && player.CanMove("right") )
-			player.x += 1;
-		if (IsKeyPressed(KEY_LEFT) && player.CanMove("left"))
-			player.x -= 1;
+		if (IsKeyPressed(KEY_RIGHT))
+			player.Move("right");
+		if (IsKeyPressed(KEY_LEFT))
+			player.Move("left");
 		if (IsKeyPressed(KEY_UP))
 			player.RotateFigure();
+		if (IsKeyDown(KEY_DOWN))
+			player.SpeedUp();
+		if(IsKeyUp(KEY_DOWN))
+			player.SpeedDown();
+
+		
 
 		// Debug управление
 		if (IsKeyPressed(KEY_D))
@@ -121,9 +114,9 @@ int main()
 			if(isDebugging)
 			{
 				std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
-					+ "\n left: " + std::to_string(player.CanMove("left"))
-					+ "\n right: " + std::to_string(player.CanMove("right"))
-					+ "\n down: " + std::to_string(player.CanMove("down"));
+					+ "\n left: " + std::to_string(player.Move("left"))
+					+ "\n right: " + std::to_string(player.Move("right"))
+					+ "\n down: " + std::to_string(player.Move("down"));
 				DrawText(debug.c_str(), 10, 10, 30, RED);
 			}
 

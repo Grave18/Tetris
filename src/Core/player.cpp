@@ -2,14 +2,14 @@
 #include "random_number.h"
 
 Player::Player(World* world)
-	: x{ 0 }, y{ 0 }, world{ world }
+	: x{ 0 }, y{ 0 }, world{ world }, float_y{ 0.0f }, fall_speed{ 2.5f }
 {
 	ChangeFigureRandom();
 	ReturnFigureToStartPosition();
 }
 
 Player::Player(World* world, FigureEnum figure)
-	: x{ 0 }, y{ 0 }, world{ world }
+	: x{ 0 }, y{ 0 }, world{ world }, float_y{ 0.0f }, fall_speed{ 2.5f }
 {
 	ChangeFigure(figure);
 	ReturnFigureToStartPosition();
@@ -32,6 +32,7 @@ void Player::ReturnFigureToStartPosition()
 {
 	x = 4;
 	y = 1;
+	float_y = 1.0f;
 }
 
 void Player::ChangeFigure(FigureEnum figures)
@@ -58,35 +59,48 @@ void Player::ChangeFigureRandom()
 	ChangeFigure((FigureEnum)RandomNumber::GetRandomNumber(0, (int)FigureEnum::MAX_ELEMENT - 1));
 }
 
-bool Player::CanMove(const char* direction)
+// Двигает игрока, возвращает false если двигаться мешает препятствие
+bool Player::Move(const char* direction)
 {
-	// Сканируем фигуру сверху вниз, слева направо
-	for (int i = 0; i < figure.size; ++i)
+	if ((direction == "right"))
 	{
-		// Координаты квадратов фигуры, переведенные в мировые
-		int world_x = x + figure[i].x;
-		int world_y = y + figure[i].y;
-
-		// TODO: сделать перечисление up, down и тд.
-
-		if ((direction == "right"))
+	// Сканируем фигуру сверху вниз, слева направо
+		for (int i = 0; i < figure.size; ++i)
 		{
+			// Координаты квадратов фигуры, переведенные в мировые
+			int world_x = x + figure[i].x;
+			int world_y = y + figure[i].y;
+			
 			if ((world_x + 1) >= world->bound_x || world->IsElementOccupied(world_x + 1, world_y))
 			{
 				return false;
 			}
 		}
-
-		if (direction == "left")
+		++x;
+	}
+	else if (direction == "left")
+	{
+		for (int i = 0; i < figure.size; ++i)
 		{
+			// Координаты квадратов фигуры, переведенные в мировые
+			int world_x = x + figure[i].x;
+			int world_y = y + figure[i].y;
+
 			if ((world_x - 1) < 0 || world->IsElementOccupied(world_x - 1, world_y))
 			{
 				return false;
 			}
 		}
-
-		if (direction == "down")
+		--x;
+	}
+	else if (direction == "down")
+	{
+		for (int i = 0; i < figure.size; ++i)
 		{
+			// Координаты квадратов фигуры, переведенные в мировые
+			int world_x = x + figure[i].x;
+			int world_y = y + figure[i].y;
+
 			if ((world_y + 1) >= world->bound_y || world->IsElementOccupied(world_x, world_y + 1))
 			{
 				LoadFigureToWorldArr();
@@ -96,9 +110,41 @@ bool Player::CanMove(const char* direction)
 				return false;
 			}
 		}
+		++y;
 	}
-
 	return true;
+}
+
+void Player::Fall(float dt)
+{
+	for (int i = 0; i < figure.size; ++i)
+	{
+		// Координаты квадратов фигуры, переведенные в мировые
+		int world_x = x + figure[i].x;
+		int world_y = y + figure[i].y;
+
+		if ((world_y + 1) >= world->bound_y || world->IsElementOccupied(world_x, world_y + 1))
+		{
+			LoadFigureToWorldArr();
+			ChangeFigureRandom();
+			ReturnFigureToStartPosition();
+
+			return;
+		}
+	}
+	// Обеспечиваем плавное движение
+	float_y += fall_speed * dt;
+	y = static_cast<int>(float_y);
+}
+
+void Player::SpeedUp()
+{
+	fall_speed = 10.0f;
+}
+
+void Player::SpeedDown()
+{
+	fall_speed = 2.5f;
 }
 
 void Player::RotateFigure()

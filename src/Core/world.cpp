@@ -12,10 +12,10 @@ World::World(int bound_x, int bound_y)
 
 void World::ClearWorld()
 {
-	for (auto& elem : arr)
+	for (auto& element : arr)
 	{
-		if (elem.is_occupied)
-			elem.Clear();
+		if (element.is_occupied)
+			element.Clear();
 	}
 }
 

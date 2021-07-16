@@ -1,7 +1,7 @@
 ﻿#include "figure.h"
 
 Figure::Figure()
-	: recs{ 0 } {}
+	: recs{ }, figure_type{ } {}
 
 Figure::Figure(std::vector<Rec> rectangles, FigureEnum type, Color color, Color outline_color) //color = BLACK, outline_color = BLACK
 	: recs{ rectangles }, figure_type{ type }
