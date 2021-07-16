@@ -1,13 +1,9 @@
 ﻿#include "world.h"
 
+
 World::World(int bound_x, int bound_y)
 	: bound_x{ bound_x }, bound_y{ bound_y }, arr{ }
 {
-	// TODO: Пофиксить месево, возможно заменить вектор на аррей лол
-	size = bound_x * bound_y;
-	arr.resize(size);
-
-	row_element_count.resize(bound_y);
 }
 
 void World::ClearWorld()
@@ -77,6 +73,11 @@ void World::ScanForCompleteRows()
 		if (num_of_occupied == bound_x)
 			ClearRow(y);
 	}
+}
+
+int World::GetSize()
+{
+	return arr.size();
 }
 
 // Заполняет ряд элементами, распологающимися выше по y на 1

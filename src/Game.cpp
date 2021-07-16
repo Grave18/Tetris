@@ -22,9 +22,10 @@ int main()
 	
 	int bound_x = scr_width / sector_size;
 	int bound_y = scr_height / sector_size;
+	const int world_size = level_width * level_height;
 
-	World world = World(bound_x, bound_y);
-	Player player = Player(&world);
+	World world(bound_x, bound_y);
+	Player player(&world);
 
 	float pos_y = 0;
 	while (!WindowShouldClose())
@@ -34,7 +35,7 @@ int main()
 		float dt{ GetFrameTime() };
 		float speed{ 0.0f };
 
-		player.Fall(dt);
+		//player.Fall(dt);
 
 		if (IsKeyPressed(KEY_RIGHT))
 			player.Move("right");
@@ -47,7 +48,7 @@ int main()
 		if(IsKeyUp(KEY_DOWN))
 			player.SpeedDown();
 
-		
+		player.Fall(dt);
 
 		// Debug управление
 		if (IsKeyPressed(KEY_D))
@@ -96,7 +97,7 @@ int main()
 			}
 			
 			// Отрисовка элементов уровня
-			for (int i = 0; i < world.size; ++i)
+			for (int i = 0; i < world.GetSize(); ++i)
 			{
 				if(world.GetElement(i).is_occupied)
 				{

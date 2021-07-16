@@ -4,11 +4,11 @@
 // Представляет собой предзаготовленные фигуры
 struct Figures
 {
-	static Figure o;
-	static Figure i;
-	static Figure s;
-	static Figure z;
-	static Figure l;
-	static Figure j;
-	static Figure t;
+	static const Figure o;
+	static const Figure i;
+	static const Figure s;
+	static const Figure z;
+	static const Figure l;
+	static const Figure j;
+	static const Figure t;
 };

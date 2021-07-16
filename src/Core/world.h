@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <array>
 
 #include "rectangle.h"
 #include "figure.h"
@@ -11,11 +11,9 @@ class World
 public:
 	int bound_x;
 	int bound_y;
-	unsigned int size;
 
 private:
-	std::vector<Rec> arr;
-	std::vector<int> row_element_count;
+	std::array<Rec, 200> arr;
 
 public:
 	World(int bound_x, int bound_y);
@@ -25,6 +23,7 @@ public:
 	void SetElementByPosition(int world_x, int world_y, Color color);
 	Rec& GetElement(int element);
 	bool IsElementOccupied(int x, int y);
+	int GetSize();
 
 	void ScanForCompleteRows();
 	void ClearRow(int row);
