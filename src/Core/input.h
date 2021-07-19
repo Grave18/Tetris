@@ -7,45 +7,45 @@
 class Command
 {
 public:
-	virtual ~Command() {}
+	virtual ~Command() 
+	{
+	}
+
 	virtual void Execute(Player &player) = 0;
 };
 
 
 class NoCommand : public Command
 {
-	void Execute(Player& player) override {};
+	void Execute(Player& player) override
+	{
+	}
 };
 
 class RotateCommand : public Command
 {
 public:
-	void Execute (Player& player) override;
+	void Execute (Player& player) override
+	{
+		player.RotateFigure();
+	}
 };
-void RotateCommand::Execute(Player& player)
-{
-	player.RotateFigure();
-}
 
 class MoveLeftCommand : public Command
 {
-	void Execute(Player& player);
-
+	void Execute(Player& player)  override
+	{
+		player.MoveLeft();
+	}
 };
-void MoveLeftCommand::Execute(Player& player)
-{
-	player.MoveLeft();
-}
 
 class MoveRightCommand : public Command
 {
-	void Execute(Player& player);
-
+	void Execute(Player& player) override
+	{
+		player.MoveRight();
+	}
 };
-void MoveRightCommand::Execute(Player& player)
-{
-	player.MoveRight();
-}
 
 
 class InputHandler

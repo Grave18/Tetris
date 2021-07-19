@@ -41,7 +41,9 @@ int main()
 			player.SpeedDown();
 
 		InputHandler input_hendler;
-		Command* command = input_hendler.HandleInput();
+		Command* command = nullptr;
+		command = input_hendler.HandleInput();
+
 		if (command)
 		{
 			command->Execute(player);
