@@ -60,58 +60,42 @@ void Player::ChangeFigureRandom()
 }
 
 // Двигает игрока, возвращает false если двигаться мешает препятствие
-bool Player::Move(const char* direction)
+bool Player::MoveLeft()
 {
-	if ((direction == "right"))
+	for (int i = 0; i < figure.size; ++i)
 	{
+		// Координаты квадратов фигуры, переведенные в мировые
+		int world_x = x + figure[i].x;
+		int world_y = y + figure[i].y;
+
+		if ((world_x - 1) < 0 || world->IsElementOccupied(world_x - 1, world_y))
+		{
+			return false;
+		}
+	}
+
+	--x; // Двигаем фигуру влево
+	
+	return true;
+}
+
+bool Player::MoveRight()
+{
 	// Сканируем фигуру сверху вниз, слева направо
-		for (int i = 0; i < figure.size; ++i)
-		{
-			// Координаты квадратов фигуры, переведенные в мировые
-			int world_x = x + figure[i].x;
-			int world_y = y + figure[i].y;
-			
-			if ((world_x + 1) >= world->bound_x || world->IsElementOccupied(world_x + 1, world_y))
-			{
-				return false;
-			}
-		}
-		++x;
-	}
-	else if (direction == "left")
+	for (int i = 0; i < figure.size; ++i)
 	{
-		for (int i = 0; i < figure.size; ++i)
+		// Координаты квадратов фигуры, переведенные в мировые
+		int world_x = x + figure[i].x;
+		int world_y = y + figure[i].y;
+
+		if ((world_x + 1) >= world->bound_x || world->IsElementOccupied(world_x + 1, world_y))
 		{
-			// Координаты квадратов фигуры, переведенные в мировые
-			int world_x = x + figure[i].x;
-			int world_y = y + figure[i].y;
-
-			if ((world_x - 1) < 0 || world->IsElementOccupied(world_x - 1, world_y))
-			{
-				return false;
-			}
+			return false;
 		}
-		--x;
 	}
-	else if (direction == "down")
-	{
-		for (int i = 0; i < figure.size; ++i)
-		{
-			// Координаты квадратов фигуры, переведенные в мировые
-			int world_x = x + figure[i].x;
-			int world_y = y + figure[i].y;
 
-			if ((world_y + 1) >= world->bound_y || world->IsElementOccupied(world_x, world_y + 1))
-			{
-				LoadFigureToWorldArr();
-				ChangeFigureRandom();
-				ReturnFigureToStartPosition();
+	++x; // Двигаем фигуру вправо
 
-				return false;
-			}
-		}
-		++y;
-	}
 	return true;
 }
 

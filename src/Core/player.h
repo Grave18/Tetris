@@ -27,7 +27,8 @@ private:
 public:
 	void ChangeFigure(FigureEnum figures);
 	void ChangeFigureRandom();
-	bool Move(const char* direction);
+	bool MoveLeft();
+	bool MoveRight();
 	void Fall(float dt);
 	void SpeedUp();
 	void SpeedDown();

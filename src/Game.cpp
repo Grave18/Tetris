@@ -35,19 +35,18 @@ int main()
 		float dt{ GetFrameTime() };
 		float speed{ 0.0f };
 
-		//player.Fall(dt);
-
-		if (IsKeyPressed(KEY_RIGHT))
-			player.Move("right");
-		if (IsKeyPressed(KEY_LEFT))
-			player.Move("left");
-		if (IsKeyPressed(KEY_UP))
-			player.RotateFigure();
 		if (IsKeyDown(KEY_DOWN))
 			player.SpeedUp();
 		if(IsKeyUp(KEY_DOWN))
 			player.SpeedDown();
 
+		InputHandler input_hendler;
+		Command* command = input_hendler.HandleInput();
+		if (command)
+		{
+			command->Execute(player);
+		}
+		
 		player.Fall(dt);
 
 		// Debug управление
@@ -115,9 +114,8 @@ int main()
 			if(isDebugging)
 			{
 				std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
-					+ "\n left: " + std::to_string(player.Move("left"))
-					+ "\n right: " + std::to_string(player.Move("right"))
-					+ "\n down: " + std::to_string(player.Move("down"));
+					+ "\n left: " + std::to_string(player.MoveLeft())
+					+ "\n right: " + std::to_string(player.MoveRight());
 				DrawText(debug.c_str(), 10, 10, 30, RED);
 			}
 
