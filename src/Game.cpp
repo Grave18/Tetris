@@ -6,8 +6,8 @@
 
 #include "Game.h"
 
-const int level_width = 10;
-const int level_height = 20;
+const int level_width = 6;
+const int level_height = 12;
 const int sector_size = 50;
 const int scr_width = level_width * sector_size;
 const int scr_height = level_height * sector_size;

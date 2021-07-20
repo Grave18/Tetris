@@ -13,7 +13,7 @@ public:
 	int bound_y;
 
 private:
-	std::array<Rec, 200> arr;
+	std::array<Rec, 72> arr;
 
 public:
 	World(int bound_x, int bound_y);
