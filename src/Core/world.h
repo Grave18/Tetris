@@ -19,12 +19,11 @@ public:
 	World(int bound_x, int bound_y);
 
 	void ClearWorld();
-	void SetElement(const Rec &element);
-	void SetElementByPosition(int world_x, int world_y, Color color);
+	int GetSize();
 	Rec& GetElement(int element);
 	bool IsElementOccupied(int x, int y);
-	int GetSize();
 
+	void SetElementByPosition(int world_x, int world_y, Color color);
 	void ScanForCompleteRows();
 	void ClearRow(int row);
 };

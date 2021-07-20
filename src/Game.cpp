@@ -13,7 +13,7 @@ const int scr_width = level_width * sector_size;
 const int scr_height = level_height * sector_size;
 const char* title =  "Tetris";
 
-static bool isDebugging = false;
+static bool isDebugging = true;
 
 int main()
 {
@@ -27,29 +27,25 @@ int main()
 	World world(bound_x, bound_y);
 	Player player(&world);
 
-	float pos_y = 0;
+	InputHandler input_hendler;
+	Command* command = nullptr;
+
 	while (!WindowShouldClose())
 	{
 		using namespace std::string_literals; // для ""s
-
-		float dt{ GetFrameTime() };
-		float speed{ 0.0f };
+		
+		float dt{ GetFrameTime() }; // deltaTime
+		
+		command = input_hendler.HandleInput();
+		if (command)
+			command->Execute(player);
+		
+		player.Fall(dt);
 
 		if (IsKeyDown(KEY_DOWN))
 			player.SpeedUp();
-		if(IsKeyUp(KEY_DOWN))
+		if (IsKeyUp(KEY_DOWN))
 			player.SpeedDown();
-
-		InputHandler input_hendler;
-		Command* command = nullptr;
-		command = input_hendler.HandleInput();
-
-		if (command)
-		{
-			command->Execute(player);
-		}
-		
-		player.Fall(dt);
 
 		// Debug управление
 		if (IsKeyPressed(KEY_D))
@@ -115,9 +111,7 @@ int main()
 			// Debug
 			if(isDebugging)
 			{
-				std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
-					+ "\n left: " + std::to_string(player.MoveLeft())
-					+ "\n right: " + std::to_string(player.MoveRight());
+				std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y);
 				DrawText(debug.c_str(), 10, 10, 30, RED);
 			}
 
