@@ -6,8 +6,8 @@
 
 #include "Game.h"
 
-const int level_width = 6;
-const int level_height = 12;
+const int level_width = 10;
+const int level_height = 20;
 const int sector_size = 50;
 const int scr_width = level_width * sector_size;
 const int scr_height = level_height * sector_size;
@@ -94,25 +94,56 @@ int main()
 			}
 			
 			// Отрисовка элементов уровня
-			for (int i = 0; i < world.GetSize(); ++i)
+			/*for (int i = 0; i < world.GetSize(); ++i)
 			{
-				if(world.GetElement(i).is_occupied)
+				Rec& element = world.GetElement(i);
+				if(element.is_occupied)
 				{
-					Rec rec = Rec(world.GetElement(i));
+					rec_struct.x = element.x * sector_size;
+					rec_struct.y = element.y * sector_size;
 
-					rec_struct.x = rec.x * sector_size;
-					rec_struct.y = rec.y * sector_size;
+					DrawRectangleRounded(rec_struct, 0.5f, 1, element.color);
+					DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, element.outline_color);
+				}
+			}*/
 
-					DrawRectangleRounded(rec_struct, 0.5f, 1, rec.color);
-					DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, rec.outline_color);
+			// Отрисовка элементов уровня 2
+			for (int y = 0; y < world.bound_y; ++y)
+			{
+				for (int x = 0; x < world.bound_x; ++x)
+				{
+					Rec& element = world.GetElement(x + y * world.bound_x);
+					if (element.is_occupied)
+					{
+						rec_struct.x = x * sector_size;
+						rec_struct.y = y * sector_size;
+
+						DrawRectangleRounded(rec_struct, 0.5f, 1, element.color);
+						DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, element.outline_color);
+					}
 				}
 			}
 
 			// Debug
 			if(isDebugging)
 			{
-				std::string debug = "pos "s + std::to_string(player.x) + ", " + std::to_string(player.y);
+				std::string debug = "FPS "s + std::to_string(GetFPS()) + 
+									"\npos "s + std::to_string(player.x) + ", " + std::to_string(player.y) +
+									"\narr[0,0] = " + std::to_string(world.arr[0].is_occupied)
+									;
 				DrawText(debug.c_str(), 10, 10, 30, RED);
+
+				//system("cls");
+				//
+				//for (int y = 0; y < world.bound_y; ++y)
+				//{
+				//	bool is_occ = false;
+				//	for (int x = 0; x < world.bound_x; ++x)
+				//	{
+				//		//std::cout << world.GetElement(x + y * world.bound_x).is_occupied << " ";
+				//	}
+				//	std::cout << "\n";
+				//}
 			}
 
 		EndDrawing();

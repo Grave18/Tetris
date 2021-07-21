@@ -48,22 +48,18 @@ void World::SetElementByPosition(int world_x, int world_y, Color color)
 
 	int index = world_x + world_y * bound_x;
 
-	if(index < arr.size() && !arr[index].is_occupied)
-	{
-		arr[index].x = world_x;
-		arr[index].y = world_y;
-		arr[index].is_occupied = true;
-		arr[index].color = color;
-	}
-	else
-		throw("Element at this number doesn't exist or already occupied");
+	arr[index].x = world_x;
+	arr[index].y = world_y;
+	arr[index].is_occupied = true;
+	arr[index].color = color;
 }
 
 void World::ScanForCompleteRows()
 {
-	for (int y = 0; y < bound_y; ++y)
+	for (int y = bound_y - 1; y >= 0 ; --y)
 	{
 		int num_of_occupied = 0;
+
 		for (int x = 0; x < bound_x; ++x)
 		{
 			if (arr[x + y * bound_x].is_occupied)

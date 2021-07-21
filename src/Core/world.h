@@ -12,8 +12,8 @@ public:
 	int bound_x;
 	int bound_y;
 
-private:
-	std::array<Rec, 72> arr;
+//private:
+	std::array<Rec, 200> arr;
 
 public:
 	World(int bound_x, int bound_y);

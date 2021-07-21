@@ -7,5 +7,7 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 // Оснавная часть проекта
 #include "Core/core.h"

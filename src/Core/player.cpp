@@ -117,7 +117,7 @@ void Player::Fall(float dt)
 		}
 	}
 	// Обеспечиваем плавное движение
-	float_y += fall_speed * dt;
+	float_y += fall_speed * 1 / 60;
 	y = static_cast<int>(float_y);
 }
 
