@@ -42,14 +42,11 @@ bool World::IsElementOccupied(int x, int y)
 // Загружает элемент в массив карты
 void World::SetElementByPosition(int world_x, int world_y, Color color)
 {
-
 	assert(world_x >= 0 && world_x < bound_x);
 	assert(world_y >= 0 && world_y < bound_y);
 
 	int index = world_x + world_y * bound_x;
 
-	arr[index].x = world_x;
-	arr[index].y = world_y;
 	arr[index].is_occupied = true;
 	arr[index].color = color;
 }

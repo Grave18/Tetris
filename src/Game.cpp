@@ -6,11 +6,11 @@
 
 #include "Game.h"
 
-const int level_width = 10;
-const int level_height = 20;
-const int sector_size = 50;
-const int scr_width = level_width * sector_size;
-const int scr_height = level_height * sector_size;
+constexpr int level_width = 10;
+constexpr int level_height = 20;
+constexpr int sector_size = 50;
+constexpr int scr_width = (level_width * sector_size) + 10 * sector_size;
+constexpr int scr_height = level_height * sector_size;
 const char* title =  "Tetris";
 
 static bool isDebugging = true;
@@ -20,9 +20,8 @@ int main()
 	InitWindow(scr_width, scr_height, title);
 	SetTargetFPS(60);
 	
-	int bound_x = scr_width / sector_size;
-	int bound_y = scr_height / sector_size;
-	const int world_size = level_width * level_height;
+	int bound_x = level_width;
+	int bound_y = level_height;
 
 	World world(bound_x, bound_y);
 	Player player(&world);
@@ -76,11 +75,25 @@ int main()
 
 			ClearBackground(RAYWHITE);
 
-			Rectangle rec_struct{};
+			// Рамки и тд.
+			Rectangle rec_struct{ 0, 0, level_width * sector_size, level_height * sector_size };
+			// Рамка вокруг мира
+			DrawRectangleLinesEx(rec_struct, 5, RED);
+
+			// Рамка счета
+			rec_struct = { level_width * sector_size + 10, 100, 300, 100 };
+			DrawRectangleLinesEx(rec_struct, 5, RED);
+
+			DrawText("SCORE:", level_width * sector_size + 10, 0, 40, BLACK);
+			DrawText("0", level_width * sector_size + 20, 125, 50, BLACK);
+
+			// Рамка следующей фигуры
+
+
+			// Отрисовка элементов фигуры
 			rec_struct.width = sector_size;
 			rec_struct.height = sector_size;
 
-			// Отрисовка элементов фигуры
 			for (int i = 0; i < player.figure.size; ++i)
 			{
 				int tmp_pos_x = player.x + player.figure[i].x;
@@ -92,22 +105,8 @@ int main()
 				DrawRectangleRounded(rec_struct, 0.5f, 1, player.figure[i].color);
 				DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, player.figure[i].outline_color);
 			}
-			
+
 			// Отрисовка элементов уровня
-			/*for (int i = 0; i < world.GetSize(); ++i)
-			{
-				Rec& element = world.GetElement(i);
-				if(element.is_occupied)
-				{
-					rec_struct.x = element.x * sector_size;
-					rec_struct.y = element.y * sector_size;
-
-					DrawRectangleRounded(rec_struct, 0.5f, 1, element.color);
-					DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, element.outline_color);
-				}
-			}*/
-
-			// Отрисовка элементов уровня 2
 			for (int y = 0; y < world.bound_y; ++y)
 			{
 				for (int x = 0; x < world.bound_x; ++x)
@@ -128,22 +127,9 @@ int main()
 			if(isDebugging)
 			{
 				std::string debug = "FPS "s + std::to_string(GetFPS()) + 
-									"\npos "s + std::to_string(player.x) + ", " + std::to_string(player.y) +
-									"\narr[0,0] = " + std::to_string(world.arr[0].is_occupied)
+									"\npos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
 									;
-				DrawText(debug.c_str(), 10, 10, 30, RED);
-
-				//system("cls");
-				//
-				//for (int y = 0; y < world.bound_y; ++y)
-				//{
-				//	bool is_occ = false;
-				//	for (int x = 0; x < world.bound_x; ++x)
-				//	{
-				//		//std::cout << world.GetElement(x + y * world.bound_x).is_occupied << " ";
-				//	}
-				//	std::cout << "\n";
-				//}
+				DrawText(debug.c_str(), 10, 10, 30, DARKBLUE);
 			}
 
 		EndDrawing();
