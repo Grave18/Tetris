@@ -13,20 +13,20 @@ constexpr int scr_width = (level_width * sector_size) + 10 * sector_size;
 constexpr int scr_height = level_height * sector_size;
 const char* title =  "Tetris";
 
-static bool isDebugging = true;
+static bool is_debugging = true;
 
 int main()
 {
 	InitWindow(scr_width, scr_height, title);
 	SetTargetFPS(60);
-	
-	int bound_x = level_width;
-	int bound_y = level_height;
+
+	constexpr int bound_x = level_width;
+	constexpr int bound_y = level_height;
 
 	World world(bound_x, bound_y);
 	Player player(&world);
 
-	InputHandler input_hendler;
+	InputHandler input_handler;
 	Command* command = nullptr;
 
 	while (!WindowShouldClose())
@@ -35,40 +35,40 @@ int main()
 		
 		float dt{ GetFrameTime() }; // deltaTime
 		
-		command = input_hendler.HandleInput();
+		command = input_handler.HandleInput();
 		if (command)
 			command->Execute(player);
 		
-		player.Fall(dt);
+		player.fall(dt);
 
 		if (IsKeyDown(KEY_DOWN))
-			player.SpeedUp();
+			player.speed_up();
 		if (IsKeyUp(KEY_DOWN))
-			player.SpeedDown();
+			player.speed_down();
 
 		// Debug управление
 		if (IsKeyPressed(KEY_D))
-			isDebugging = !isDebugging;
+			is_debugging = !is_debugging;
 
-		if(isDebugging)
+		if(is_debugging)
 		{
 			if (IsKeyPressed(KEY_O))
-				player.ChangeFigure(FigureEnum::O);
+				player.change_figure(figure_enum::O);
 			else if (IsKeyPressed(KEY_I))
-				player.ChangeFigure(FigureEnum::I);
+				player.change_figure(figure_enum::I);
 			else if (IsKeyPressed(KEY_S))
-				player.ChangeFigure(FigureEnum::S);
+				player.change_figure(figure_enum::S);
 			else if (IsKeyPressed(KEY_Z))
-				player.ChangeFigure(FigureEnum::Z);
+				player.change_figure(figure_enum::Z);
 			else if (IsKeyPressed(KEY_L))
-				player.ChangeFigure(FigureEnum::L);
+				player.change_figure(figure_enum::L);
 			else if (IsKeyPressed(KEY_J))
-				player.ChangeFigure(FigureEnum::J);
+				player.change_figure(figure_enum::J);
 			else if (IsKeyPressed(KEY_T))
-				player.ChangeFigure(FigureEnum::T);
+				player.change_figure(figure_enum::T);
 
 			if (IsKeyPressed(KEY_BACKSPACE))
-				world.ClearWorld();
+				world.clear_world();
 		}
 
 		BeginDrawing();
@@ -111,7 +111,7 @@ int main()
 			{
 				for (int x = 0; x < world.bound_x; ++x)
 				{
-					Rec& element = world.GetElement(x + y * world.bound_x);
+					const Rec& element = world.get_element(x + y * world.bound_x);
 					if (element.is_occupied)
 					{
 						rec_struct.x = x * sector_size;
@@ -124,7 +124,7 @@ int main()
 			}
 
 			// Debug
-			if(isDebugging)
+			if(is_debugging)
 			{
 				std::string debug = "FPS "s + std::to_string(GetFPS()) + 
 									"\npos "s + std::to_string(player.x) + ", " + std::to_string(player.y)

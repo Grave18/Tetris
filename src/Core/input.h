@@ -27,7 +27,7 @@ class RotateCommand : public Command
 public:
 	void Execute (Player& player) override
 	{
-		player.RotateFigure();
+		player.rotate_figure();
 	}
 };
 
@@ -35,7 +35,7 @@ class MoveLeftCommand : public Command
 {
 	void Execute(Player& player)  override
 	{
-		player.MoveLeft();
+		player.move_left();
 	}
 };
 
@@ -43,7 +43,7 @@ class MoveRightCommand : public Command
 {
 	void Execute(Player& player) override
 	{
-		player.MoveRight();
+		player.move_right();
 	}
 };
 

@@ -3,6 +3,6 @@
 class RandomNumber
 {
 public:
-	static int GetRandomNumber(int min, int max);
-	static void ResetRandomNumber();
+	static int get_random_number(int min, int max);
+	static void reset_random_number();
 };

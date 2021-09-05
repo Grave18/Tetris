@@ -10,16 +10,16 @@
 class Figure
 {
 public:
-	int size;
-	FigureEnum figure_type;
+	uint64_t size{};
+	figure_enum figure_type;
 
 private:
-	std::array<Rec, 4> recs;
+	std::array<Rec, 4> recs_;
 
 public:
 	Figure();
 
-	Figure(std::array<Rec, 4> rectangles, FigureEnum type, Color color = BLACK, Color outline_color = BLACK);
+	Figure(std::array<Rec, 4> rectangles, figure_enum type, Color color = BLACK, Color outline_color = BLACK);
 
 	Rec& operator[](unsigned int index);
 	const Rec& operator[](unsigned int index) const;

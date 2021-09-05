@@ -2,7 +2,7 @@
 
 #include <raylib.h>
 
-// Представляе стобой квадрат - минимальную частицу мира
+// Представляет собой квадрат - минимальную частицу мира
 class Rec
 {
 public:
@@ -13,5 +13,5 @@ public:
 
 	Rec(int x = 0, int y = 0, Color color = BLACK, Color outline_color = BLACK);
 
-	void Clear();
+	void clear();
 };

@@ -12,18 +12,20 @@ public:
 	int bound_x;
 	int bound_y;
 
-//private:
-	std::array<Rec, 200> arr;
+private:
+	std::array<Rec, 200> arr_;
 
 public:
 	World(int bound_x, int bound_y);
 
-	void ClearWorld();
-	int GetSize();
-	Rec& GetElement(int element);
-	bool IsElementOccupied(int x, int y);
+	void clear_world();
+	[[nodiscard]] size_t get_size() const;
+	Rec& get_element(size_t element);
+	bool is_element_occupied(int x, int y);
 
-	void SetElementByPosition(int world_x, int world_y, Color color);
-	void ScanForCompleteRows();
-	void ClearRow(int row);
+	void set_element_by_position(int world_x, int world_y, Color color);
+	void scan_for_complete_rows();
+
+private:
+	void clear_row(int row);
 };

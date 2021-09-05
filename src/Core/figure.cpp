@@ -1,26 +1,26 @@
 ﻿#include "figure.h"
 
 Figure::Figure()
-	: recs{ }, figure_type{ } {}
+	: figure_type{ } {}
 
-Figure::Figure(std::array<Rec, 4> rectangles, FigureEnum type, Color color, Color outline_color) //color = BLACK, outline_color = BLACK
-	: recs{ rectangles }, figure_type{ type }
+Figure::Figure(std::array<Rec, 4> rectangles, figure_enum type, Color color, Color outline_color) //color = BLACK, outline_color = BLACK
+	: figure_type{ type }, recs_{ rectangles }
 {
-	size = recs.size();
+	size = recs_.size();
 
-	for (int i = 0; i < recs.size(); ++i)
+	for (auto& rec : recs_)
 	{
-		recs[i].color = color;
-		recs[i].outline_color = outline_color;
+		rec.color = color;
+		rec.outline_color = outline_color;
 	}
 }
 
 Rec& Figure::operator[](unsigned int index)
 {
-	return recs[index];
+	return recs_[index];
 }
 
 const Rec& Figure::operator[](unsigned int index) const
 {
-	return recs[index];
+	return recs_[index];
 }

@@ -17,20 +17,21 @@ public:
 	World* world;
 	Figure figure;
 
-	Player(World* world);
-	Player(World* world, FigureEnum figure);
+	explicit Player(World* world);
+	Player(World* world, figure_enum figure);
 
 private:
-	void LoadFigureToWorldArr();
-	void ReturnFigureToStartPosition();
+	void load_figure_to_world_arr();
+	void load_figure_to_world_arr2();
+	void return_figure_to_start_position();
 
 public:
-	void ChangeFigure(FigureEnum figures);
-	void ChangeFigureRandom();
-	bool MoveLeft();
-	bool MoveRight();
-	void Fall(float dt);
-	void SpeedUp();
-	void SpeedDown();
-	void RotateFigure();
+	void change_figure(figure_enum figures);
+	void change_figure_random();
+	bool move_left();
+	bool move_right();
+	void fall(float dt);
+	void speed_up();
+	void speed_down();
+	void rotate_figure();
 };
