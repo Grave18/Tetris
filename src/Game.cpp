@@ -32,8 +32,8 @@ int main()
 	while (!WindowShouldClose())
 	{
 		using namespace std::string_literals; // для ""s
-		
-		float dt{ GetFrameTime() }; // deltaTime
+
+		const float dt = GetFrameTime(); // deltaTime
 		
 		command = input_handler.HandleInput();
 		if (command)
@@ -53,22 +53,22 @@ int main()
 		if(is_debugging)
 		{
 			if (IsKeyPressed(KEY_O))
-				player.change_figure(figure_enum::O);
+				player.change_figure(Figure::Figures::O);
 			else if (IsKeyPressed(KEY_I))
-				player.change_figure(figure_enum::I);
+				player.change_figure(Figure::Figures::I);
 			else if (IsKeyPressed(KEY_S))
-				player.change_figure(figure_enum::S);
+				player.change_figure(Figure::Figures::S);
 			else if (IsKeyPressed(KEY_Z))
-				player.change_figure(figure_enum::Z);
+				player.change_figure(Figure::Figures::Z);
 			else if (IsKeyPressed(KEY_L))
-				player.change_figure(figure_enum::L);
+				player.change_figure(Figure::Figures::L);
 			else if (IsKeyPressed(KEY_J))
-				player.change_figure(figure_enum::J);
+				player.change_figure(Figure::Figures::J);
 			else if (IsKeyPressed(KEY_T))
-				player.change_figure(figure_enum::T);
+				player.change_figure(Figure::Figures::T);
 
 			if (IsKeyPressed(KEY_BACKSPACE))
-				world.clear_world();
+				world.clear();
 		}
 
 		BeginDrawing();
@@ -94,10 +94,10 @@ int main()
 			rec_struct.width = sector_size;
 			rec_struct.height = sector_size;
 
-			for (int i = 0; i < player.figure.size; ++i)
+			for (uint64_t i = 0; i < player.figure.size; ++i)
 			{
-				int tmp_pos_x = player.x + player.figure[i].x;
-				int tmp_pos_y = player.y + player.figure[i].y;
+				const int tmp_pos_x = player.x + player.figure[i].x;
+				const int tmp_pos_y = player.y + player.figure[i].y;
 
 				rec_struct.x = tmp_pos_x * sector_size;
 				rec_struct.y = tmp_pos_y * sector_size;
@@ -127,8 +127,7 @@ int main()
 			if(is_debugging)
 			{
 				std::string debug = "FPS "s + std::to_string(GetFPS()) + 
-									"\npos "s + std::to_string(player.x) + ", " + std::to_string(player.y)
-									;
+									"\npos "s + std::to_string(player.x) + ", " + std::to_string(player.y);
 				DrawText(debug.c_str(), 10, 10, 30, DARKBLUE);
 			}
 

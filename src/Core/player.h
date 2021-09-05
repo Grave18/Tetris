@@ -1,16 +1,14 @@
 #pragma once
 
 #include "figure.h"
-#include "figures.h"
-#include "figure_enum.h"
 #include "world.h"
 
 class Player
 {
 private:
 	// Костыль, для обеспечения плавного движения вниз
-	float float_y;
-	float fall_speed;
+	float float_y_;
+	float fall_speed_;
 public:
 	int x;
 	int y;
@@ -18,7 +16,7 @@ public:
 	Figure figure;
 
 	explicit Player(World* world);
-	Player(World* world, figure_enum figure);
+	Player(World* world, Figure::Figures figure);
 
 private:
 	void load_figure_to_world_arr();
@@ -26,7 +24,7 @@ private:
 	void return_figure_to_start_position();
 
 public:
-	void change_figure(figure_enum figures);
+	void change_figure(Figure::Figures figures);
 	void change_figure_random();
 	bool move_left();
 	bool move_right();

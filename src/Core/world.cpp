@@ -8,7 +8,7 @@ World::World(int bound_x, int bound_y)
 }
 
 // Очищает мир
-void World::clear_world()
+void World::clear()
 {
 	for (auto& element : arr_)
 	{
@@ -17,16 +17,17 @@ void World::clear_world()
 	}
 }
 
-size_t World::get_size() const
+// Возвращает размер массива мира
+uint64_t World::get_size() const
 {
 	return arr_.size();
 }
 
 // Пока не используется
-Rec& World::get_element(size_t element)
+Rec& World::get_element(uint64_t index)
 {
-	if (element <= arr_.size())
-		return arr_[element];
+	if (index < arr_.size())
+		return arr_[index];
 	else
 		throw("Element at this number doesn't exist");
 }

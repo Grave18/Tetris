@@ -3,8 +3,8 @@
 Figure::Figure()
 	: figure_type{ } {}
 
-Figure::Figure(std::array<Rec, 4> rectangles, figure_enum type, Color color, Color outline_color) //color = BLACK, outline_color = BLACK
-	: figure_type{ type }, recs_{ rectangles }
+Figure::Figure(std::array<Rec, 4> rectangles, Figures type, Color color, Color outline_color)
+: figure_type{ type }, recs_{ rectangles }
 {
 	size = recs_.size();
 
@@ -15,12 +15,20 @@ Figure::Figure(std::array<Rec, 4> rectangles, figure_enum type, Color color, Col
 	}
 }
 
-Rec& Figure::operator[](unsigned int index)
+const Figure Figure::o{ std::array<Rec, 4>{{ { 0, 0 }, { 0, 1 }, { 1, 0 }, { 1, 1 } }}, Figures::O, YELLOW };
+const Figure Figure::i{ std::array<Rec, 4>{{ { 0,-2 }, { 0,-1 }, { 0, 0 }, { 0, 1 } }}, Figures::I, SKYBLUE };
+const Figure Figure::s{ std::array<Rec, 4>{{ {-1, 0 }, { 0,-1 }, { 0, 0 }, { 1,-1 } }}, Figures::S, RED };
+const Figure Figure::z{ std::array<Rec, 4>{{ {-1,-1 }, { 0,-1 }, { 0, 0 }, { 1, 0 } }}, Figures::Z, GREEN };
+const Figure Figure::l{ std::array<Rec, 4>{{ { 0,-1 }, { 0, 0 }, { 0, 1 }, { 1, 1 } }}, Figures::L, ORANGE };
+const Figure Figure::j{ std::array<Rec, 4>{{ {-1, 1 }, { 0,-1 }, { 0, 0 }, { 0, 1 } }}, Figures::J, PINK };
+const Figure Figure::t{ std::array<Rec, 4>{{ {-1, 0 }, { 0,-1 }, { 0, 0 }, { 1, 0 } }}, Figures::T, PURPLE };
+
+Rec& Figure::operator[](uint64_t index)
 {
 	return recs_[index];
 }
 
-const Rec& Figure::operator[](unsigned int index) const
+const Rec& Figure::operator[](uint64_t index) const
 {
 	return recs_[index];
 }

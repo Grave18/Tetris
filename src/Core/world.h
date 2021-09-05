@@ -18,9 +18,9 @@ private:
 public:
 	World(int bound_x, int bound_y);
 
-	void clear_world();
-	[[nodiscard]] size_t get_size() const;
-	Rec& get_element(size_t element);
+	void clear();
+	[[nodiscard]] uint64_t get_size() const;
+	Rec& get_element(uint64_t index);
 	bool is_element_occupied(int x, int y);
 
 	void set_element_by_position(int world_x, int world_y, Color color);

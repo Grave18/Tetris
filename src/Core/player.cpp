@@ -2,14 +2,14 @@
 #include "random_number.h"
 
 Player::Player(World* world)
-	: float_y{0.0f}, fall_speed{2.5f}, x{0}, y{0}, world{world}
+	: float_y_{0.0f}, fall_speed_{2.5f}, x{0}, y{0}, world{world}
 {
 	change_figure_random();
 	return_figure_to_start_position();
 }
 
-Player::Player(World* world, figure_enum figure)
-	: float_y{0.0f}, fall_speed{2.5f}, x{0}, y{0}, world{world}
+Player::Player(World* world, Figure::Figures figure)
+	: float_y_{0.0f}, fall_speed_{2.5f}, x{0}, y{0}, world{world}
 {
 	change_figure(figure);
 	return_figure_to_start_position();
@@ -45,32 +45,32 @@ void Player::return_figure_to_start_position()
 {
 	x = 4;
 	y = 1;
-	float_y = 1.0f;
+	float_y_ = 1.0f;
 }
 
-void Player::change_figure(const figure_enum figures)
+void Player::change_figure(const Figure::Figures figures)
 {
-	if (figures == figure_enum::O)
-		figure = Figures::o;
-	else if (figures == figure_enum::I)
-		figure = Figures::i;
-	else if (figures == figure_enum::S)
-		figure = Figures::s;
-	else if (figures == figure_enum::Z)
-		figure = Figures::z;
-	else if (figures == figure_enum::L)
-		figure = Figures::l;
-	else if (figures == figure_enum::J)
-		figure = Figures::j;
-	else if (figures == figure_enum::T)
-		figure = Figures::t;
+	if (figures == Figure::Figures::O)
+		figure = Figure::o;
+	else if (figures == Figure::Figures::I)
+		figure = Figure::i;
+	else if (figures == Figure::Figures::S)
+		figure = Figure::s;
+	else if (figures == Figure::Figures::Z)
+		figure = Figure::z;
+	else if (figures == Figure::Figures::L)
+		figure = Figure::l;
+	else if (figures == Figure::Figures::J)
+		figure = Figure::j;
+	else if (figures == Figure::Figures::T)
+		figure = Figure::t;
 }
 
 void Player::change_figure_random()
 {
 	RandomNumber::reset_random_number();
 	change_figure(
-		static_cast<figure_enum>(RandomNumber::get_random_number(0, static_cast<int>(figure_enum::MAX_ELEMENT) - 1)));
+		static_cast<Figure::Figures>(RandomNumber::get_random_number(0, static_cast<int>(Figure::Figures::MAX_ELEMENT) - 1)));
 }
 
 // Двигает игрока, возвращает false если двигаться мешает препятствие
@@ -131,23 +131,23 @@ void Player::fall(float dt)
 		}
 	}
 	// Обеспечиваем плавное движение
-	float_y += fall_speed * 1 / 60;
-	y = static_cast<int>(float_y);
+	float_y_ += fall_speed_ * 1 / 60;
+	y = static_cast<int>(float_y_);
 }
 
 void Player::speed_up()
 {
-	fall_speed = 10.0f;
+	fall_speed_ = 10.0f;
 }
 
 void Player::speed_down()
 {
-	fall_speed = 2.5f;
+	fall_speed_ = 2.5f;
 }
 
 void Player::rotate_figure()
 {
-	if (figure.figure_type != figure_enum::O && (x - 1) > -1 && (x + 1) < world->bound_x)
+	if (figure.figure_type != Figure::Figures::O && (x - 1) > -1 && (x + 1) < world->bound_x)
 	{
 		for (int i = 0; i < figure.size; ++i)
 		{

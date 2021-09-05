@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\figure.cpp" />
-    <ClCompile Include="src\Core\figures.cpp" />
     <ClCompile Include="src\Core\player.cpp" />
     <ClCompile Include="src\Core\random_number.cpp" />
     <ClCompile Include="src\Core\rectangle.cpp" />
@@ -30,8 +29,6 @@
   <ItemGroup>
     <ClInclude Include="src\Core\core.h" />
     <ClInclude Include="src\Core\figure.h" />
-    <ClInclude Include="src\Core\figures.h" />
-    <ClInclude Include="src\Core\figure_enum.h" />
     <ClInclude Include="src\Core\input.h" />
     <ClInclude Include="src\Core\player.h" />
     <ClInclude Include="src\Core\random_number.h" />
