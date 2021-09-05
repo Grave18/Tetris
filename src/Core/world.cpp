@@ -3,7 +3,7 @@
 
 
 World::World(int bound_x, int bound_y)
-	: bound_x{ bound_x }, bound_y{ bound_y }, arr_{ }
+	: size_x{ bound_x }, size_y{ bound_y }, arr_{ }
 { 
 }
 
@@ -35,8 +35,8 @@ Rec& World::get_element(uint64_t index)
 // Обращение как к двумерному массиву
 bool World::is_element_occupied(int x, int y)
 {
-	if ((x >= 0 && x <= bound_x) && (y >= 0 && y <= bound_y))
-		return arr_[x + y * bound_x].is_occupied;
+	if ((x >= 0 && x <= size_x) && (y >= 0 && y <= size_y))
+		return arr_[x + y * size_x].is_occupied;
 	else
 		return false;
 }
@@ -44,10 +44,10 @@ bool World::is_element_occupied(int x, int y)
 // Загружает элемент в массив карты
 void World::set_element_by_position(int world_x, int world_y, Color color)
 {
-	assert(world_x >= 0 && world_x < bound_x);
-	assert(world_y >= 0 && world_y < bound_y);
+	assert(world_x >= 0 && world_x < size_x);
+	assert(world_y >= 0 && world_y < size_y);
 
-	const int index = world_x + world_y * bound_x;
+	const int index = world_x + world_y * size_x;
 
 	arr_[index].is_occupied = true;
 	arr_[index].color = color;
@@ -55,29 +55,29 @@ void World::set_element_by_position(int world_x, int world_y, Color color)
 
 void World::scan_for_complete_rows()
 {
-	for (int y = bound_y - 1; y >= 0 ; --y)
+	for (int y = size_y - 1; y >= 0 ; --y)
 	{
 		int num_of_occupied = 0;
 
-		for (int x = 0; x < bound_x; ++x)
+		for (int x = 0; x < size_x; ++x)
 		{
-			if (arr_[x + y * bound_x].is_occupied)
+			if (arr_[x + y * size_x].is_occupied)
 				++num_of_occupied;
 		}
 
-		if (num_of_occupied == bound_x)
+		if (num_of_occupied == size_x)
 			clear_row(y);
 	}
 }
 
 // Заполняет ряд элементами, располагающимися выше по y на 1
-void World::clear_row(int row)
+void World::clear_row(const int row)
 {
-	assert(row >= 0 && row < bound_y && " row out of bounds");
+	assert(row >= 0 && row < size_y && " row out of bounds");
 
 	if (row == 0)
 	{
-		for (int x = 0; x < bound_x; ++x)
+		for (int x = 0; x < size_x; ++x)
 		{
 			// так как row = 0 индексом является просто x
 			arr_[x].is_occupied = false;
@@ -85,11 +85,11 @@ void World::clear_row(int row)
 	}
 	else
 	{
-		for (int x = 0; x < bound_x; ++x)
+		for (int x = 0; x < size_x; ++x)
 		{
 			// Копируем параметры верхнего элемента
-			arr_[x + row * bound_x].is_occupied = arr_[x + (row - 1) * bound_x].is_occupied;
-			arr_[x + row * bound_x].color = arr_[x + (row - 1) * bound_x].color;
+			arr_[x + row * size_x].is_occupied = arr_[x + (row - 1) * size_x].is_occupied;
+			arr_[x + row * size_x].color = arr_[x + (row - 1) * size_x].color;
 		}
 
 		clear_row(row - 1);

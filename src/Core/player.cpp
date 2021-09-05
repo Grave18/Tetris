@@ -102,7 +102,7 @@ bool Player::move_right()
 		const int world_x = x + figure[i].x;
 		const int world_y = y + figure[i].y;
 
-		if ((world_x + 1) >= world->bound_x || world->is_element_occupied(world_x + 1, world_y))
+		if ((world_x + 1) >= world->size_x || world->is_element_occupied(world_x + 1, world_y))
 		{
 			return false;
 		}
@@ -121,7 +121,7 @@ void Player::fall(float dt)
 		const int world_x = x + figure[i].x;
 		const int world_y = y + figure[i].y;
 
-		if ((world_y + 1) >= world->bound_y || world->is_element_occupied(world_x, world_y + 1))
+		if ((world_y + 1) >= world->size_y || world->is_element_occupied(world_x, world_y + 1))
 		{
 			load_figure_to_world_arr();
 			change_figure_random();
@@ -147,7 +147,7 @@ void Player::speed_down()
 
 void Player::rotate_figure()
 {
-	if (figure.figure_type != Figure::Figures::O && (x - 1) > -1 && (x + 1) < world->bound_x)
+	if (figure.figure_type != Figure::Figures::O && (x - 1) > -1 && (x + 1) < world->size_x)
 	{
 		for (int i = 0; i < figure.size; ++i)
 		{
