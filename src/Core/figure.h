@@ -8,6 +8,9 @@
 // Представляет собой фигуру, которой управляет игрок
 class Figure
 {
+private:
+	std::array<Rec, 4> recs_;
+
 public:
 	enum Figures
 	{
@@ -25,12 +28,7 @@ public:
 	static const Figure j;
 	static const Figure t;
 
-private:
-	std::array<Rec, 4> recs_;
-
-public:
 	Figure();
-
 	Figure(std::array<Rec, 4> rectangles, Figures type, Color color = BLACK, Color outline_color = BLACK);
 
 	Rec& operator[](uint64_t index);

@@ -3,13 +3,14 @@
 */
 
 #pragma once
+
 #include <string>
 #include <vector>
-#ifdef _DEBUG
-#include <iostream>
-#endif
-
 #include <raylib.h>
+
+#ifdef _DEBUG
+	#include <iostream>
+#endif
 
 // Основная часть проекта
 #include "Core/core.h"

@@ -9,3 +9,4 @@
 #include "world.h"
 #include "player.h"
 #include "input.h"
+#include "observer.h"

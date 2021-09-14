@@ -15,37 +15,17 @@ Player::Player(World* world, Figure::Figures figure)
 	return_figure_to_start_position();
 }
 
-void Player::load_figure_to_world_arr()
-{
-	//TODO: Все не так, надо заменить отправку объектов на отправку данных, наверно
-	// Загружаем фигуру в массив карты
-	for (int i = 0; i < figure.size; ++i)
-	{
-		world->set_element_by_position(figure[i].x + x, figure[i].y + y, figure[i].color);
-	}
-
-	world->scan_for_complete_rows();
-}
-
-// Возможно будет заменой
-void Player::load_figure_to_world_arr2()
-{
-	//TODO: Все не так, надо заменить отправку объектов на отправку данных, наверно
-	// Загружаем фигуру в массив карты
-	for (int i = 0; i < figure.size; ++i)
-	{
-		world->set_element_by_position(figure[i].x + x, figure[i].y + y, figure[i].color);
-	}
-
-	world->scan_for_complete_rows();
-}
-
 // Возвращаем фигуру в начало и меняем на рандомную
 void Player::return_figure_to_start_position()
 {
 	x = 4;
 	y = 1;
 	float_y_ = 1.0f;
+}
+
+Subject& Player::fell_event()
+{
+	return subject_;
 }
 
 void Player::change_figure(const Figure::Figures figures)
@@ -70,7 +50,9 @@ void Player::change_figure_random()
 {
 	RandomNumber::reset_random_number();
 	change_figure(
-		static_cast<Figure::Figures>(RandomNumber::get_random_number(0, static_cast<int>(Figure::Figures::MAX_ELEMENT) - 1)));
+		static_cast<Figure::Figures>(
+			RandomNumber::get_random_number(
+				0, static_cast<int>(Figure::Figures::MAX_ELEMENT) - 1)));
 }
 
 // Двигает игрока, возвращает false если двигаться мешает препятствие
@@ -123,7 +105,7 @@ void Player::fall(float dt)
 
 		if ((world_y + 1) >= world->size_y || world->is_element_occupied(world_x, world_y + 1))
 		{
-			load_figure_to_world_arr();
+			subject_.notify(this, Events::PLAYER_FELL_EVENT);
 			change_figure_random();
 			return_figure_to_start_position();
 

@@ -25,6 +25,8 @@ int main()
 
 	World world(bound_x, bound_y);
 	Player player(&world);
+	// Добавляем наблюдателя зы событием падения игрока на низ уровня
+	player.fell_event().add_observer(&world);
 
 	InputHandler input_handler;
 	Command* command = nullptr;
@@ -107,11 +109,11 @@ int main()
 			}
 
 			// Отрисовка элементов уровня
-			for (int y = 0; y < world.bound_y; ++y)
+			for (int y = 0; y < world.size_y; ++y)
 			{
-				for (int x = 0; x < world.bound_x; ++x)
+				for (int x = 0; x < world.size_x; ++x)
 				{
-					const Rec& element = world.get_element(x + y * world.bound_x);
+					const Rec& element = world.get_element(x + y * world.size_x);
 					if (element.is_occupied)
 					{
 						rec_struct.x = x * sector_size;

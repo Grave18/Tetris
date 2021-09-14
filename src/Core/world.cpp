@@ -1,6 +1,8 @@
 ﻿#include "world.h"
 #include <cassert>
 
+#include "player.h"
+
 
 World::World(int bound_x, int bound_y)
 	: size_x{ bound_x }, size_y{ bound_y }, arr_{ }
@@ -41,6 +43,8 @@ bool World::is_element_occupied(int x, int y)
 		return false;
 }
 
+//private:
+
 // Загружает элемент в массив карты
 void World::set_element_by_position(int world_x, int world_y, Color color)
 {
@@ -53,9 +57,9 @@ void World::set_element_by_position(int world_x, int world_y, Color color)
 	arr_[index].color = color;
 }
 
-void World::scan_for_complete_rows()
+void World::scan_for_complete_rows_and_call_clear_row()
 {
-	for (int y = size_y - 1; y >= 0 ; --y)
+	for (int y = 0; y < size_y ; ++y)
 	{
 		int num_of_occupied = 0;
 
@@ -94,7 +98,22 @@ void World::clear_row(const int row)
 
 		clear_row(row - 1);
 	}
+}
 
-
+void World::on_notify(void* entity, Events event)
+{
+	if(event == Events::PLAYER_FELL_EVENT)
+	{
+		const auto player = static_cast<Player*>(entity);
+		for(int i = 0; i < player->figure.size; ++i)
+		{
+			set_element_by_position(
+				player->figure[i].x + player->x,
+				player->figure[i].y + player->y,
+				player->figure[i].color);
+		}
+		
+		scan_for_complete_rows_and_call_clear_row();
+	}
 }
 

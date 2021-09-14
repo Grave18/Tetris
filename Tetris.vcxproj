@@ -30,6 +30,7 @@
     <ClInclude Include="src\Core\core.h" />
     <ClInclude Include="src\Core\figure.h" />
     <ClInclude Include="src\Core\input.h" />
+    <ClInclude Include="src\Core\observer.h" />
     <ClInclude Include="src\Core\player.h" />
     <ClInclude Include="src\Core\random_number.h" />
     <ClInclude Include="src\Core\rectangle.h" />
