@@ -1,5 +1,6 @@
 # Tetris
 A Tetris game made with RayLib 3.7.
+
 To test this game raylib.dll required next to main executable.
 To build this project header files and compiled libraries needed.
 https://github.com/raysan5/raylib
