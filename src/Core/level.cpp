@@ -1,16 +1,16 @@
-﻿#include "world.h"
+﻿#include "level.h"
 #include <cassert>
 
 #include "player.h"
 
 
-World::World(int bound_x, int bound_y)
+Level::Level(int bound_x, int bound_y)
 	: size_x{ bound_x }, size_y{ bound_y }, arr_{ }
 { 
 }
 
 // Очищает мир
-void World::clear()
+void Level::clear()
 {
 	for (auto& element : arr_)
 	{
@@ -20,13 +20,13 @@ void World::clear()
 }
 
 // Возвращает размер массива мира
-uint64_t World::get_size() const
+uint64_t Level::get_size() const
 {
 	return arr_.size();
 }
 
 // Пока не используется
-Rec& World::get_element(uint64_t index)
+Rec& Level::get_element(uint64_t index)
 {
 	if (index < arr_.size())
 		return arr_[index];
@@ -35,7 +35,7 @@ Rec& World::get_element(uint64_t index)
 }
 
 // Обращение как к двумерному массиву
-bool World::is_element_occupied(int x, int y)
+bool Level::is_element_occupied(int x, int y)
 {
 	if ((x >= 0 && x <= size_x) && (y >= 0 && y <= size_y))
 		return arr_[x + y * size_x].is_occupied;
@@ -46,7 +46,7 @@ bool World::is_element_occupied(int x, int y)
 //private:
 
 // Загружает элемент в массив карты
-void World::set_element_by_position(int world_x, int world_y, Color color)
+void Level::set_element_by_position(int world_x, int world_y, Color color)
 {
 	assert(world_x >= 0 && world_x < size_x);
 	assert(world_y >= 0 && world_y < size_y);
@@ -57,7 +57,7 @@ void World::set_element_by_position(int world_x, int world_y, Color color)
 	arr_[index].color = color;
 }
 
-void World::scan_for_complete_rows_and_call_clear_row()
+void Level::scan_for_complete_rows_and_call_clear_row()
 {
 	for (int y = 0; y < size_y ; ++y)
 	{
@@ -75,7 +75,7 @@ void World::scan_for_complete_rows_and_call_clear_row()
 }
 
 // Заполняет ряд элементами, располагающимися выше по y на 1
-void World::clear_row(const int row)
+void Level::clear_row(const int row)
 {
 	assert(row >= 0 && row < size_y && " row out of bounds");
 
@@ -100,7 +100,7 @@ void World::clear_row(const int row)
 	}
 }
 
-void World::on_notify(void* entity, Events event)
+void Level::on_notify(void* entity, Events event)
 {
 	if(event == Events::PLAYER_FELL_EVENT)
 	{

@@ -21,9 +21,8 @@
   <ItemGroup>
     <ClCompile Include="src\Core\figure.cpp" />
     <ClCompile Include="src\Core\player.cpp" />
-    <ClCompile Include="src\Core\random_number.cpp" />
     <ClCompile Include="src\Core\rectangle.cpp" />
-    <ClCompile Include="src\Core\world.cpp" />
+    <ClCompile Include="src\Core\level.cpp" />
     <ClCompile Include="src\Game.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -32,9 +31,8 @@
     <ClInclude Include="src\Core\input.h" />
     <ClInclude Include="src\Core\observer.h" />
     <ClInclude Include="src\Core\player.h" />
-    <ClInclude Include="src\Core\random_number.h" />
     <ClInclude Include="src\Core\rectangle.h" />
-    <ClInclude Include="src\Core\world.h" />
+    <ClInclude Include="src\Core\level.h" />
     <ClInclude Include="src\Game.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

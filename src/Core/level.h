@@ -7,7 +7,7 @@
 #include "observer.h"
 
 // Представляет собой игровой мир
-class World : public Observer
+class Level : public Observer
 {
 public:
 	int size_x;
@@ -17,7 +17,7 @@ private:
 	std::array<Rec, 200> arr_;
 
 public:
-	World(int bound_x, int bound_y);
+	Level(int bound_x, int bound_y);
 
 	void clear();
 	[[nodiscard]] uint64_t get_size() const;
