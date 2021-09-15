@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <iostream>
 #include <vector>
 
 enum class Events
@@ -28,10 +29,13 @@ public:
 
 	void remove_observer(Observer* observer)
 	{
-		auto a = std::remove(
+		// Save new end and remove element from vector
+		const auto new_end = std::remove(
 			observers_.begin(),
 			observers_.end(), 
 			observer);
+		// Finally erase unused tail from vector
+		observers_.erase(new_end, observers_.end());
 	}
 	
 	void notify(void* entity, Events event)
