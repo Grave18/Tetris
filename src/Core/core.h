@@ -6,7 +6,7 @@
 
 #include "rectangle.h"
 #include "figure.h"
-#include "world.h"
+#include "level.h"
 #include "player.h"
 #include "input.h"
 #include "observer.h"

@@ -1,14 +1,16 @@
-﻿#include "player.h"
-#include "random_number.h"
+﻿#include <raylib.h>
 
-Player::Player(World* world)
+#include "player.h"
+
+
+Player::Player(Level* world)
 	: float_y_{0.0f}, fall_speed_{2.5f}, x{0}, y{0}, world{world}
 {
 	change_figure_random();
 	return_figure_to_start_position();
 }
 
-Player::Player(World* world, Figure::Figures figure)
+Player::Player(Level* world, Figure::Figures figure)
 	: float_y_{0.0f}, fall_speed_{2.5f}, x{0}, y{0}, world{world}
 {
 	change_figure(figure);
@@ -48,11 +50,10 @@ void Player::change_figure(const Figure::Figures figures)
 
 void Player::change_figure_random()
 {
-	RandomNumber::reset_random_number();
-	change_figure(
+	change_figure( 
 		static_cast<Figure::Figures>(
-			RandomNumber::get_random_number(
-				0, static_cast<int>(Figure::Figures::MAX_ELEMENT) - 1)));
+			GetRandomValue(
+	0, static_cast<int>(Figure::Figures::MAX_ELEMENT) - 1)));
 }
 
 // Двигает игрока, возвращает false если двигаться мешает препятствие

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "figure.h"
-#include "world.h"
+#include "level.h"
 #include "observer.h"
 
 class Player
@@ -16,11 +16,11 @@ private:
 public:
 	int x;
 	int y;
-	World* world;
+	Level* world;
 	Figure figure;
 
-	explicit Player(World* world);
-	Player(World* world, Figure::Figures figure);
+	explicit Player(Level* world);
+	Player(Level* world, Figure::Figures figure);
 
 private:
 	void return_figure_to_start_position();
