@@ -10,7 +10,16 @@
 * Figure(фигура) - то, чем управляет игрок
 */
 
-#include "game.h"
+#include <string>
+#include <vector>
+#include <raylib.h>
+
+#ifdef _DEBUG
+#include <iostream>
+#endif
+
+#include "Core/player.h"
+#include "Core/level.h"
 
 constexpr int level_width = 10;
 constexpr int level_height = 20;
@@ -119,7 +128,7 @@ int main()
 		{
 			for (int x = 0; x < level.size_x; ++x)
 			{
-				const Rec& element = level.get_element(x + y * level.size_x);
+				const Rectangle& element = level.get_element(x + y * level.size_x);
 				if (element.is_occupied)
 				{
 					rec_struct.x = x * sector_size;

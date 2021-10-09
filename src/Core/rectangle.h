@@ -3,15 +3,15 @@
 #include <raylib.h>
 
 // Представляет собой квадрат - минимальную частицу мира
-class Rec
+class Rectangle
 {
 public:
-	int x, y;
-	bool is_occupied;
-	Color color;
-	Color outline_color;
+	Rectangle(int x, int y, Color color)
+		: x_(x), y_(y), color_(color)
+	{
+	}
 
-	Rec(int x = 0, int y = 0, Color color = BLACK, Color outline_color = BLACK);
-
-	void clear();
+private:
+	int x_, y_;
+	Color color_;
 };
