@@ -29,7 +29,7 @@ public:
 
 	void remove_observer(Observer* observer)
 	{
-		// Save new end and remove element from vector
+		// Save new end and remove elements from vector
 		const auto new_end = std::remove(
 			observers_.begin(),
 			observers_.end(), 

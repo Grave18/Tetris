@@ -10,7 +10,7 @@
 * Figure(фигура) - то, чем управляет игрок
 */
 
-#include "Game.h"
+#include "game.h"
 
 constexpr int level_width = 10;
 constexpr int level_height = 20;
@@ -42,6 +42,7 @@ int main()
 		// DeltaTime
 		const float dt = GetFrameTime();
 
+		// Input managed by Command
 		command = input_handler.HandleInput();
 		if (command)
 			command->Execute(player);
