@@ -19,35 +19,41 @@
 #include "Core/player.h"
 #include "Core/level.h"
 #include "Core/graphics.h"
-
-constexpr int levelWidth = 10;
-constexpr int levelHeight = 20;
-constexpr int sectorSize = 50;
-constexpr int windowWidth = 1920;
-constexpr int windowHeight = 1080;
-const char* title = "Tetris";
+#include "Core/levelBounds.h"
 
 int main()
 {
-	InitWindow(windowWidth, windowHeight, title);
-	SetTargetFPS(60);
+    constexpr int windowWidth = 1920;
+    constexpr int windowHeight = 1080;
+    const char* title = "Tetris";
 
-	Graphics graphics(sectorSize);
-	Level level(levelWidth, levelHeight);
-	Player player(&level);
+    // compile time select the size of tile by the size of the screen
+    constexpr int tileSize = windowHeight / 24;
+    constexpr int levelWidth = 10;
+    constexpr int levelHeight = 20;
+    constexpr int levelOffsetX = 400;
+    constexpr int levelOffsetY = 400;
 
-	while (!WindowShouldClose())
-	{
-		player.updateInput();
+    InitWindow(windowWidth, windowHeight, title);
+    SetTargetFPS(60);
 
-		BeginDrawing();
-			ClearBackground(RAYWHITE);
+    LevelBounds bounds{levelOffsetX, levelOffsetY, levelWidth, levelHeight, tileSize};
+    Graphics graphics(bounds);
+    Level level(bounds);
+    Player player(&level);
 
-			player.updateGraphics(graphics);
-			//level. updateGraphics(graphics);
+    while (!WindowShouldClose())
+    {
+        player.updateInput();
 
-		EndDrawing();
-	}
+        BeginDrawing();
+            ClearBackground(RAYWHITE);
 
-	CloseWindow();
+            level. updateGraphics(graphics);
+            player.updateGraphics(graphics);
+
+        EndDrawing();
+    }
+
+    CloseWindow();
 }
