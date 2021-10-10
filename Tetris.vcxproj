@@ -22,8 +22,9 @@
     <ClCompile Include="src\game.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\graphics.h" />
     <ClInclude Include="src\Core\player.h" />
-    <ClInclude Include="src\Core\rectangle.h" />
+    <ClInclude Include="src\Core\tile.h" />
     <ClInclude Include="src\Core\level.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

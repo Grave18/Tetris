@@ -1,18 +1,32 @@
 #pragma once
 
-#include <array>
+#include <vector>
 
-#include "rectangle.h"
+#include "tile.h"
+#include "graphics.h"
 
 // Представляет собой игровой мир
 class Level
 {
 public:
-	void update()
+	Level(int width, int height)
+	: width_(width), height_(height), level_(width_ * height_)
+	{}
+	Level(Level&) = delete;
+	Level(Level&&) = delete;
+
+	void updateGraphics(Graphics& graphics)
+	{
+		//graphics.drawTile()
+	}
+
+	void resolveCollision(int x, int y)
 	{
 
 	}
 
 private:
-	Rectangle level[];
+	int width_;
+	int height_;
+	std::vector<Rectangle> level_;
 };
