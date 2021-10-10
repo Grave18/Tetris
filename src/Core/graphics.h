@@ -2,24 +2,41 @@
 
 #include <raylib.h>
 #include "tile.h"
+#include "levelBounds.h"
 
+// Provide rendering of a tile
 class Graphics
 {
 public:
-	Graphics(int sectorSize)
-		: sectorSize_(sectorSize)
-		,rec{ 0 , 0, static_cast<float>(sectorSize), static_cast<float>(sectorSize) }
-	{}
+	Graphics(const LevelBounds& bounds)
+		: bounds_(bounds)
+		, rec_{0, 0, static_cast<float>(bounds.tileSize), static_cast<float>(bounds.tileSize)}
+	{ }
 
-	void drawTile(const Tile& tile, int x = 0, int y = 0)
+	void drawLevelFrame(int frameWidth = 5, int frameOffset = 5)
 	{
-		rec.x = x * sectorSize_;
-		rec.y = y * sectorSize_;
-		DrawRectangleRounded(rec, 0.5f, 1, tile.getColor());
-		DrawRectangleRoundedLines(rec, 0.5f, 1, 3, BLACK);
+		// draw level frame
+		
+		Rectangle worldBoundFrame{
+			static_cast<float>(bounds_.levelToScreenPosX - frameOffset),
+			static_cast<float>(bounds_.levelToScreenPosY - frameOffset),
+			static_cast<float>(bounds_.width * bounds_.tileSize + frameOffset * 2),
+			static_cast<float>(bounds_.height * bounds_.tileSize + frameOffset * 2) };
+
+		float roundness = 0.07f;
+		DrawRectangleRounded(worldBoundFrame, roundness, frameWidth, LIGHTGRAY);
+		DrawRectangleRoundedLines(worldBoundFrame, roundness, 1, frameWidth, RED);
+	}
+
+	void drawTile(const Tile& tile)
+	{
+		rec_.x = static_cast<float>(bounds_.levelToScreenPosX + tile.getX() * bounds_.tileSize);
+		rec_.y = static_cast<float>(bounds_.levelToScreenPosY + tile.getY() * bounds_.tileSize);
+		DrawRectangleRounded(rec_, 0.5f, 1, tile.getColor());
+		DrawRectangleRoundedLines(rec_, 0.5f, 1, bounds_.tileSize / 15, BLACK);
 	}
 
 private:
-	Rectangle rec;
-	int sectorSize_;
+	Rectangle rec_;
+	const LevelBounds bounds_;
 };

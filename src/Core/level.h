@@ -4,29 +4,53 @@
 
 #include "tile.h"
 #include "graphics.h"
+#include "levelBounds.h"
 
-// Представляет собой игровой мир
+// Game level
 class Level
 {
 public:
-	Level(int width, int height)
-	: width_(width), height_(height), level_(width_ * height_)
-	{}
-	Level(Level&) = delete;
-	Level(Level&&) = delete;
+    Level(const LevelBounds& bounds)
+    :  bounds_(bounds), level_(bounds.width * bounds.height)
+    {
+        // temporary level fill
+        Tile tile1 = Tile(1,  1, GREEN, true);
+        Tile tile2 = Tile(10, 5, BLUE,  true);
+        level_.push_back(tile1);
+        level_.push_back(tile2);
+    }
+    Level(Level&) = delete;
+    Level(Level&&) = delete;
 
-	void updateGraphics(Graphics& graphics)
-	{
-		//graphics.drawTile()
-	}
+    void updateGraphics(Graphics& graphics)
+    {
+        graphics.drawLevelFrame();
 
-	void resolveCollision(int x, int y)
-	{
+        // draw level tiles
+        for (const auto& tile : level_)
+        {
+            if(tile.isOccupied) 
+                graphics.drawTile(tile);
+        }
+    }
 
-	}
+    bool resolveCollision(int x, int y)
+    {
+        // check level bounds
+        if (x < 0 || y < 0 || x >= bounds_.width || y >= bounds_.height)
+            return false;
+
+        // check each tile for collision
+        for(const auto& tile : level_)
+        {
+            if (tile.isOccupied && x == tile.getX() && y == tile.getY())
+                return false;
+        }
+
+        return true;
+    }
 
 private:
-	int width_;
-	int height_;
-	std::vector<Rectangle> level_;
+    LevelBounds bounds_;
+    std::vector<Tile> level_;
 };
