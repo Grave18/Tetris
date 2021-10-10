@@ -4,6 +4,7 @@
 #include "level.h"
 #include "tile.h"
 
+// Main player of all players
 class Player
 {
 public:
@@ -16,30 +17,26 @@ public:
 
     void updateInput()
     {
-        if (IsKeyPressed(KEY_A))
-        {
-            --x_;
-        }
+        int tmpX = x_;
+        int tmpY = y_;
 
-        if (IsKeyPressed(KEY_D))
-        {
-            ++x_;
-        }
+        if (IsKeyPressed(KEY_A)) --tmpX;
+        if (IsKeyPressed(KEY_D)) ++tmpX;
+        if (IsKeyPressed(KEY_W)) --tmpY;
+        if (IsKeyPressed(KEY_S)) ++tmpY;
 
-        if (IsKeyPressed(KEY_W))
+        if (level_->resolveCollision(tmpX, tmpY))
         {
-            --y_;
-        }
-
-        if (IsKeyPressed(KEY_S))
-        {
-            ++y_;
+            x_ = tmpX;
+            y_ = tmpY;
         }
     }
 
     void updateGraphics(Graphics& graphics)
     {
-        graphics.drawTile(player_, x_, y_);
+        player_.setX(x_);
+        player_.setY(y_);
+        graphics.drawTile(player_);
     }
 
 private:
