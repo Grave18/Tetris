@@ -22,6 +22,7 @@
     <ClCompile Include="src\game.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\figures.h" />
     <ClInclude Include="src\Core\graphics.h" />
     <ClInclude Include="src\Core\levelBounds.h" />
     <ClInclude Include="src\Core\player.h" />
@@ -121,6 +122,7 @@
       <DisableSpecificWarnings>4996;26812;4068;26495;26451</DisableSpecificWarnings>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)src/Core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,6 +144,7 @@
       <DisableSpecificWarnings>4996;26812;4068;26495;26451</DisableSpecificWarnings>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)src/Core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -165,6 +168,7 @@
       <DisableSpecificWarnings>4996;26812;4068;26495;26451</DisableSpecificWarnings>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)src/Core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -186,6 +190,7 @@
       <DisableSpecificWarnings>4996;26812;4068;26495;26451</DisableSpecificWarnings>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
       <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(ProjectDir)src/Core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
