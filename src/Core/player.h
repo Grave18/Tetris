@@ -3,14 +3,14 @@
 #include <raylib.h>
 #include "level.h"
 #include "tile.h"
+#include "figures.h"
 
 // Main player of all players
 class Player
 {
 public:
-    Player(Level* level)
-        : level_(level)
-        , player_(0, 0, RED)
+    explicit Player(Level* level)
+        : level_(level) 
     {}
     Player(Player&) = delete;
     Player(Player&&) = delete;
@@ -25,22 +25,29 @@ public:
         if (IsKeyPressed(KEY_W)) --tmpY;
         if (IsKeyPressed(KEY_S)) ++tmpY;
 
-        if (level_->resolveCollision(tmpX, tmpY))
+        const auto isNotCollided = [this, tmpX, tmpY](const auto& tile)
+        {
+            return level_->resolveCollision(tmpX + tile.getX(), tmpY + tile.getY());
+        };
+
+        if (std::all_of(player_.begin(), player_.end(), isNotCollided))
         {
             x_ = tmpX;
             y_ = tmpY;
         }
     }
 
-    void updateGraphics(Graphics& graphics)
+    void updateGraphics(Graphics& graphics) const
     {
-        player_.setX(x_);
-        player_.setY(y_);
-        graphics.drawTile(player_);
+        for (const auto& tile : player_)
+        {
+            graphics.drawTile(tile, x_, y_);
+        }
     }
 
 private:
-    int x_ = 0, y_ = 0;
-    Tile player_;
+    int x_ = 5;
+    int y_ = 3;
+    std::array<Tile, 4> player_ = Figures::i;
     Level* level_;
 };
