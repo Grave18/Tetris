@@ -16,10 +16,10 @@
 #include <iostream>
 #endif
 
-#include "Core/player.h"
-#include "Core/level.h"
-#include "Core/graphics.h"
-#include "Core/levelBounds.h"
+#include "player.h"
+#include "level.h"
+#include "graphics.h"
+#include "levelBounds.h"
 
 int main()
 {
@@ -31,15 +31,15 @@ int main()
     constexpr int tileSize = windowHeight / 24;
     constexpr int levelWidth = 10;
     constexpr int levelHeight = 20;
-    constexpr int levelOffsetX = 400;
-    constexpr int levelOffsetY = 400;
+    constexpr int levelOffsetX = 100;
+    constexpr int levelOffsetY = 100;
 
     InitWindow(windowWidth, windowHeight, title);
     SetTargetFPS(60);
 
-    LevelBounds bounds{levelOffsetX, levelOffsetY, levelWidth, levelHeight, tileSize};
-    Graphics graphics(bounds);
-    Level level(bounds);
+    LevelBound levelBound{levelOffsetX, levelOffsetY, levelWidth, levelHeight, tileSize};
+    Graphics graphics(levelBound);
+    Level level(levelBound);
     Player player(&level);
 
     while (!WindowShouldClose())
@@ -51,6 +51,7 @@ int main()
 
             level. updateGraphics(graphics);
             player.updateGraphics(graphics);
+            DrawFPS(10, 10);
 
         EndDrawing();
     }

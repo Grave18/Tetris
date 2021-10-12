@@ -1,7 +1,7 @@
 #pragma once
 
 // Left to right up to down bounds an size of a tile size
-struct LevelBounds
+struct LevelBound
 {
 	int levelToScreenPosX;
 	int levelToScreenPosY;
