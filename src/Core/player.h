@@ -20,21 +20,31 @@ public:
         int tmpX = x_;
         int tmpY = y_;
 
+        // movement
         if (IsKeyPressed(KEY_A)) --tmpX;
         if (IsKeyPressed(KEY_D)) ++tmpX;
         if (IsKeyPressed(KEY_W)) --tmpY;
         if (IsKeyPressed(KEY_S)) ++tmpY;
 
-        const auto isNotCollided = [this, tmpX, tmpY](const auto& tile)
-        {
-            return level_->resolveCollision(tmpX + tile.getX(), tmpY + tile.getY());
-        };
-
-        if (std::all_of(player_.begin(), player_.end(), isNotCollided))
+        if (std::all_of(player_.begin(), player_.end(), 
+                [this, tmpX, tmpY](const auto& tile)
+                {
+                    return level_->resolveCollision(tmpX + tile.getX(), tmpY + tile.getY());
+                }))
         {
             x_ = tmpX;
             y_ = tmpY;
         }
+
+        // change figure
+        if (IsKeyPressed(KEY_O)) player_ = Figures::o;
+        if (IsKeyPressed(KEY_I)) player_ = Figures::i;
+        if (IsKeyPressed(KEY_X)) player_ = Figures::s;
+        if (IsKeyPressed(KEY_Z)) player_ = Figures::z;
+        if (IsKeyPressed(KEY_L)) player_ = Figures::l;
+        if (IsKeyPressed(KEY_J)) player_ = Figures::j;
+        if (IsKeyPressed(KEY_T)) player_ = Figures::t;
+
     }
 
     void updateGraphics(Graphics& graphics) const
@@ -48,6 +58,6 @@ public:
 private:
     int x_ = 5;
     int y_ = 3;
-    std::array<Tile, 4> player_ = Figures::i;
+    std::array<Tile, 4> player_ = Figures::o;
     Level* level_;
 };
