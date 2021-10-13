@@ -51,7 +51,8 @@ int main()
 
             level. updateGraphics(graphics);
             player.updateGraphics(graphics);
-            DrawFPS(10, 10);
+            if (player.isGodMode()) DrawFPS(10, 10);
+            
 
         EndDrawing();
     }

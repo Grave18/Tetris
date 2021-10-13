@@ -10,7 +10,7 @@ class Player
 {
 public:
     explicit Player(Level* level)
-        : level_(level) 
+        : level_(level)
     {}
     Player(Player&) = delete;
     Player(Player&&) = delete;
@@ -35,16 +35,20 @@ public:
             x_ = tmpX;
             y_ = tmpY;
         }
+        
+        if (IsKeyPressed(KEY_Q)) isGodMode_ = !isGodMode_;
 
         // change figure
-        if (IsKeyPressed(KEY_O)) player_ = Figures::o;
-        if (IsKeyPressed(KEY_I)) player_ = Figures::i;
-        if (IsKeyPressed(KEY_X)) player_ = Figures::s;
-        if (IsKeyPressed(KEY_Z)) player_ = Figures::z;
-        if (IsKeyPressed(KEY_L)) player_ = Figures::l;
-        if (IsKeyPressed(KEY_J)) player_ = Figures::j;
-        if (IsKeyPressed(KEY_T)) player_ = Figures::t;
-
+        if (isGodMode_)
+        {
+            if (IsKeyPressed(KEY_O)) player_ = Figures::o;
+            if (IsKeyPressed(KEY_I)) player_ = Figures::i;
+            if (IsKeyPressed(KEY_X)) player_ = Figures::s;
+            if (IsKeyPressed(KEY_Z)) player_ = Figures::z;
+            if (IsKeyPressed(KEY_L)) player_ = Figures::l;
+            if (IsKeyPressed(KEY_J)) player_ = Figures::j;
+            if (IsKeyPressed(KEY_T)) player_ = Figures::t;
+        }
     }
 
     void updateGraphics(Graphics& graphics) const
@@ -55,9 +59,15 @@ public:
         }
     }
 
+    bool isGodMode() const
+    {
+        return isGodMode_;
+    }
+
 private:
     int x_ = 5;
     int y_ = 3;
     std::array<Tile, 4> player_ = Figures::o;
     Level* level_;
+    bool isGodMode_ = true;
 };
