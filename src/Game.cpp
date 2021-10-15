@@ -45,6 +45,7 @@ int main()
     while (!WindowShouldClose())
     {
         player.updateInput();
+        player.updateMovement(GetFrameTime());
 
         BeginDrawing();
             ClearBackground(RAYWHITE);
