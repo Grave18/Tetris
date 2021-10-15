@@ -10,7 +10,7 @@ class Graphics
 public:
 	explicit Graphics(const LevelBound& bounds)
 		: bounds_(bounds)
-		, rec_{0, 0, static_cast<float>(bounds.tileSize), static_cast<float>(bounds.tileSize)}
+		
 	{ }
 
 	void drawLevelBackground(int frameWidth = 5, int frameOffset = 5) const
@@ -29,18 +29,25 @@ public:
 		DrawRectangleRoundedLines(levelBound, roundness, 1, frameWidth, RED);
 	}
 
-	void drawTile(const Tile& tile, int worldX = 0, int worldY = 0)
+	void drawTile(const Tile& tile, int worldX = 0, int worldY = 0) const
 	{
 		if (worldY + tile.getY() >= 0)
 		{
-			rec_.x = static_cast<float>(bounds_.levelToScreenPosX + (worldX + tile.getX()) * bounds_.tileSize);
-			rec_.y = static_cast<float>(bounds_.levelToScreenPosY + (worldY + tile.getY()) * bounds_.tileSize);
-			DrawRectangleRounded(rec_, 0.5f, 1, tile.getColor());
-			DrawRectangleRoundedLines(rec_, 0.5f, 1, bounds_.tileSize / 15, BLACK);
+			Rectangle tileRec
+			{
+				static_cast<float>(bounds_.levelToScreenPosX + (worldX + tile.getX()) * bounds_.tileSize),
+				static_cast<float>(bounds_.levelToScreenPosY + (worldY + tile.getY()) * bounds_.tileSize),
+				static_cast<float>(bounds_.tileSize),
+				static_cast<float>(bounds_.tileSize)
+			};
+
+			float roundness = 0.5f;
+			int lineThick = bounds_.tileSize / 15;
+			DrawRectangleRounded(tileRec, roundness, 1, tile.getColor());
+			DrawRectangleRoundedLines(tileRec, roundness, 1, lineThick, BLACK);
 		}
 	}
 
 private:
 	const LevelBound bounds_;
-	Rectangle rec_;
 };
