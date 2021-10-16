@@ -8,6 +8,7 @@
 
 // player's default fall speed
 constexpr float DEFAULT_SPEED = 1.0f;
+constexpr float SPRINT_SPEED = 8.0f;
 
 // Main player of all players
 class Player
@@ -31,7 +32,7 @@ public:
         // movement input
         if (IsKeyPressed(KEY_A))  tryToMove("left");
         if (IsKeyPressed(KEY_D))  tryToMove("right");
-        if (IsKeyPressed(KEY_S))  speed_ = 4.0f;
+        if (IsKeyPressed(KEY_S))  speed_ = SPRINT_SPEED;
         if (IsKeyReleased(KEY_S)) speed_ = DEFAULT_SPEED;
         if (IsKeyPressed(KEY_W))  tryToRotate();
         if (IsKeyPressed(KEY_SPACE))  level_->clearRow(19);
