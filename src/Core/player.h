@@ -17,6 +17,9 @@ public:
         : level_(level)
     {
         placePlayerToStartPosition();
+
+        // Add level as observer
+        observers_.addObserver(level);
     }
 
     Player(Player&) = delete;
@@ -31,11 +34,15 @@ public:
         if (IsKeyPressed(KEY_S))  speed_ = 4.0f;
         if (IsKeyReleased(KEY_S)) speed_ = DEFAULT_SPEED;
         if (IsKeyPressed(KEY_W))  tryToRotate();
+        if (IsKeyPressed(KEY_SPACE))  level_->clearRow(19);
+
 
         // God Mode
         if (IsKeyPressed(KEY_Q)) isInGodMode_ = !isInGodMode_;
         if (isInGodMode_)
         {
+            if (IsKeyPressed(KEY_BACKSPACE)) level_->clear();
+
             // change figure input
             if (IsKeyPressed(KEY_UP))    --y_;
             if (IsKeyPressed(KEY_DOWN))  ++y_;
@@ -74,8 +81,11 @@ public:
         }
         else
         {
-            // TODO: fire fell event
+            // fire fell event
+            observers_.notify(this, Events::PLAYER_FELL);
+            level_->addFigure(player_, x_, static_cast<int>(y_));
             TraceLog(LOG_INFO, "Fell_event");
+
             placePlayerToStartPosition();
         }
     }
@@ -91,6 +101,9 @@ public:
     bool isInGodMode() const { return isInGodMode_; }
     int getX() const { return x_; }
     int getY() const { return static_cast<int>(y_); }
+
+    Subject& getObservers() { return observers_; }
+    std::array<Tile, 4> getTiles() const { return player_; }
 
 private:
     void tryToMove(const std::string_view& side)
@@ -148,4 +161,6 @@ private:
     bool isInGodMode_ = true;
     std::array<Tile, 4> player_ = Figures::j;
     Level* level_;
+
+    Subject observers_;
 };
