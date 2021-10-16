@@ -1,9 +1,13 @@
 #pragma once
 
 #include <raylib.h>
+#include <string_view>
 #include "level.h"
 #include "tile.h"
 #include "figures.h"
+
+// player's default fall speed
+constexpr float DEFAULT_SPEED = 1.0f;
 
 // Main player of all players
 class Player
@@ -11,27 +15,33 @@ class Player
 public:
     explicit Player(Level* level)
         : level_(level)
-    {}
+    {
+        placePlayerToStartPosition();
+    }
+
     Player(Player&) = delete;
     Player(Player&&) = delete;
 
     // Input
     void updateInput()
     {
-        tmpX_ = x_;
-        tmpY_ = y_;
+        // movement input
+        if (IsKeyPressed(KEY_A))  tryToMove("left");
+        if (IsKeyPressed(KEY_D))  tryToMove("right");
+        if (IsKeyPressed(KEY_S))  speed_ = 4.0f;
+        if (IsKeyReleased(KEY_S)) speed_ = DEFAULT_SPEED;
+        if (IsKeyPressed(KEY_W))  tryToRotate();
 
-        // movement
-        if (IsKeyPressed(KEY_A)) --tmpX_;
-        if (IsKeyPressed(KEY_D)) ++tmpX_;
-        if (IsKeyPressed(KEY_W)) --tmpY_;
-        if (IsKeyPressed(KEY_S)) ++tmpY_;
-        
-
-        if (IsKeyPressed(KEY_Q)) isGodMode_ = !isGodMode_;
-        // change figure
-        if (isGodMode_)
+        // God Mode
+        if (IsKeyPressed(KEY_Q)) isInGodMode_ = !isInGodMode_;
+        if (isInGodMode_)
         {
+            // change figure input
+            if (IsKeyPressed(KEY_UP))    --y_;
+            if (IsKeyPressed(KEY_DOWN))  ++y_;
+            if (IsKeyPressed(KEY_LEFT))  --x_;
+            if (IsKeyPressed(KEY_RIGHT)) ++x_;
+
             if (IsKeyPressed(KEY_O)) player_ = Figures::o;
             if (IsKeyPressed(KEY_I)) player_ = Figures::i;
             if (IsKeyPressed(KEY_X)) player_ = Figures::s;
@@ -42,46 +52,100 @@ public:
         }
     }
 
-    // Movement
     void updateMovement(const float dt)
     {
-        if (std::all_of(
-                player_.begin(), 
-                player_.end(),
-                [=](const auto& tile)
-                {
-                    return level_->resolveCollision(static_cast<int>(tmpX_) + tile.getX(),
-                                                    static_cast<int>(tmpY_) + tile.getY());
-                }))
-        {
-            x_ = tmpX_;
-            y_ = tmpY_;
-        }
+        float tmpY = y_;
 
-        if (dt < 1.0f) y_ += speed_ * dt;
-        else           y_ += 1.0f;
+        // falling on ground
+        if (dt < 1.0f) tmpY += speed_ * dt;
+        else           tmpY += 1.0f;
+
+        // check collision
+        if (std::all_of(
+            player_.begin(), 
+            player_.end(),
+            [this, tmpY](const auto& tile)
+            {
+                return level_->willNotCollideWith(x_ + tile.getX(),
+                                                  static_cast<int>(tmpY) + tile.getY());
+            }))
+        {
+            y_ = tmpY;
+        }
+        else
+        {
+            // TODO: fire fell event
+            TraceLog(LOG_INFO, "Fell_event");
+            placePlayerToStartPosition();
+        }
     }
 
-    // Graphics
     void updateGraphics(const Graphics& graphics) const
     {
         for (const auto& tile : player_)
         {
-            graphics.drawTile(tile, static_cast<int>(x_), static_cast<int>(y_));
+            graphics.drawTile(tile, x_, static_cast<int>(y_));
         }
     }
 
-    bool isGodMode() const { return isGodMode_; }
-    float getX() const { return x_; }
-    float getY() const { return y_; }
+    bool isInGodMode() const { return isInGodMode_; }
+    int getX() const { return x_; }
+    int getY() const { return static_cast<int>(y_); }
 
 private:
-    float x_ = 5.0f;
-    float y_ = 3.0f;
-    float tmpX_ = 0.0f;
-    float tmpY_ = 0.0f;
-    float speed_ = 1.0f;
-    bool isGodMode_ = true;
-    std::array<Tile, 4> player_ = Figures::o;
+    void tryToMove(const std::string_view& side)
+    {
+        int tmpX = 0;
+        if (side == "left")  tmpX = x_ - 1;
+        if (side == "right") tmpX = x_ + 1;
+
+        // check collision
+        if (std::all_of(
+            player_.begin(),
+            player_.end(),
+            [this, tmpX](const auto& tile)
+        {
+            return level_->willNotCollideWith(tmpX + tile.getX(), static_cast<int>(y_) + tile.getY());
+        }))
+        {
+            x_ = tmpX;
+        }
+    }
+
+    // Try to rotate player if player will not collide with level
+    void tryToRotate()
+    {
+        // rotate if new position of player didn't collide with level
+        if (std::all_of(
+            player_.begin(),
+            player_.end(),
+            [this](const auto& tile)
+        {
+            const int tileX = tile.getY();
+            const int tileY = -tile.getX();
+            return level_->willNotCollideWith(x_ + tileX, static_cast<int>(y_) + tileY);
+        }))
+        {
+            for (auto& tile : player_)
+            {
+                const int x = tile.getY();
+                const int y = -tile.getX();
+                tile.setX(x);
+                tile.setY(y);
+            }
+        }
+    }
+
+    void placePlayerToStartPosition()
+    {
+        x_ = 5;
+        y_ = 3.0f;
+    }
+
+    int x_ = 0;
+    float y_ = 0.0f;
+    float speed_ = DEFAULT_SPEED;
+    bool isInGodMode_ = true;
+    std::array<Tile, 4> player_ = Figures::j;
     Level* level_;
 };

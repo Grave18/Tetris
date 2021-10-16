@@ -24,7 +24,7 @@ public:
     Level(Level&) = delete;
     Level(Level&&) = delete;
 
-    void updateGraphics(Graphics& graphics) const
+    void updateGraphics(const Graphics& graphics) const
     {
         graphics.drawLevelBackground();
 
@@ -36,7 +36,7 @@ public:
         }
     }
 
-    bool resolveCollision(int x, int y) const
+    bool willNotCollideWith(int x, int y) const
     {
         // check level bounds
         if (x < 0 || x >= bounds_.width || y >= bounds_.height)
