@@ -65,8 +65,10 @@ public:
         {
             if (rows_[i] == 10)
             {
-                // TODO: fire ROW_FILLED
+                // TODO: fire ROW_CLEARED
                 clearRow(i);
+                TraceLog(LOG_INFO, "ROW_CLEARED_EVENT");
+                observers_.notify(this, Events::ROW_CLEARED);
             }
             else --i;
         }
@@ -139,7 +141,7 @@ public:
 
     Subject& getObservers() { return observers_; }
 
-    void onNoify(void* entity, Events event) override
+    void onNotify(void* entity, Events event) override
     {
         // TODO: delete this or refactor
     }
