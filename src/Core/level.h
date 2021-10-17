@@ -23,7 +23,7 @@ public:
     Level(Level&) = delete;
     Level(Level&&) = delete;
 
-    void updateGraphics(const Graphics& graphics) const
+    void updateGraphics(const GraphicsSystem& graphics) const
     {
         graphics.drawLevelBackground();
 
@@ -37,7 +37,7 @@ public:
     bool willNotCollideWith(int x, int y) const
     {
         // check level bounds
-        if (x < 0 || x >= bounds_.width || y >= bounds_.height)
+        if (x < 0 || x >= bounds_.windowWidthInTiles || y >= bounds_.windowHeightInTiles)
             return false;
 
         // check each tile for collision
@@ -132,7 +132,7 @@ public:
         TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
     }
 
-    Subject& getObservers() { return observers_; }
+    Subject& clearedRowEvent() { return observers_; }
 
     void onNotify(void* entity, Events event) override;
 
