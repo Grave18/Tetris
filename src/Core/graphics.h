@@ -16,7 +16,7 @@ public:
 	void drawLevelBackground(int frameWidth = 5, int frameOffset = 5) const
 	{
 		// draw level background and frame
-		Rectangle levelBound
+		Rectangle levelBoundRec
 		{
 			static_cast<float>(bounds_.levelToScreenPosX - frameOffset),
 			static_cast<float>(bounds_.levelToScreenPosY - frameOffset),
@@ -25,8 +25,8 @@ public:
 		};
 
 		float roundness = 0.07f;
-		DrawRectangleRounded(levelBound, roundness, frameWidth, LIGHTGRAY);
-		DrawRectangleRoundedLines(levelBound, roundness, 1, frameWidth, RED);
+		DrawRectangleRounded(levelBoundRec, roundness, frameWidth, LIGHTGRAY);
+		DrawRectangleRoundedLines(levelBoundRec, roundness, 1, frameWidth, RED);
 	}
 
 	void drawTile(const Tile& tile, int worldX = 0, int worldY = 0) const
