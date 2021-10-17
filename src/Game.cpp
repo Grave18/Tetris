@@ -21,6 +21,7 @@
 #include "graphics.h"
 #include "levelBounds.h"
 #include "soundSystem.h"
+#include "score.h"
 
 int main()
 {
@@ -28,6 +29,7 @@ int main()
     constexpr int windowHeight = 1080;
     const char* title = "Tetris";
 
+    // level window
     // compile time select the size of tile by the size of the screen
     constexpr int tileSize = windowHeight / 24;
     constexpr int levelWidth = 10;
@@ -35,18 +37,32 @@ int main()
     constexpr int levelOffsetX = 100;
     constexpr int levelOffsetY = 100;
 
+    // score window
+    constexpr int scoreOffsetX = levelOffsetX + levelWidth * tileSize + 100;
+    constexpr int scoreOffsetY = levelOffsetY;
+    constexpr int scoreWidth = 300;
+    constexpr int scoreHeight = 150;
+    constexpr int scorePositionX = 10;
+    constexpr int scorePositionY = 30;
+
     InitWindow(windowWidth, windowHeight, title);
     SetTargetFPS(60);
 
     LevelBound levelBound{levelOffsetX, levelOffsetY, levelWidth, levelHeight, tileSize};
-    GraphicsSystem graphics(levelBound);
+    ScoreBound scoreBound{scoreOffsetX, scoreOffsetY, scoreWidth, scoreHeight, scorePositionX, scorePositionY};
+
+    GraphicsSystem graphics(levelBound, scoreBound);
     SoundSystem sound;
     Level level(levelBound);
     Player player(&level);
+    Score score;
 
     // add events
-    player.getObservers().addObserver(&sound);
-    level.getObservers().addObserver(&sound);
+    player.fellEvent().addObserver(&level);
+    player.fellEvent().addObserver(&sound);
+    player.fellEvent().addObserver(&score);
+    level.clearedRowEvent().addObserver(&sound);
+    level.clearedRowEvent().addObserver(&score);
 
     while (!WindowShouldClose())
     {
@@ -58,6 +74,7 @@ int main()
 
             level. updateGraphics(graphics);
             player.updateGraphics(graphics);
+            score.update(graphics);
             if (player.isInGodMode()) DrawFPS(10, 10);
             
 
