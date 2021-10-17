@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="src\Core\level.cpp" />
     <ClCompile Include="src\Core\figures.cpp" />
+    <ClCompile Include="src\Core\score.h" />
     <ClCompile Include="src\game.cpp" />
   </ItemGroup>
   <ItemGroup>
