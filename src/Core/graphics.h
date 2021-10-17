@@ -5,10 +5,10 @@
 #include "levelBounds.h"
 
 // Provide rendering of a tile
-class Graphics
+class GraphicsSystem
 {
 public:
-	explicit Graphics(const LevelBound& bounds)
+	explicit GraphicsSystem(const LevelBound& bounds)
 		: bounds_(bounds)
 		
 	{ }
