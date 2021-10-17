@@ -6,7 +6,7 @@
 class Tile
 {
 public:
-    Tile(int x = 0, int y = 0, Color color = BLACK, bool isOccupied = false )
+    Tile(int x = 0, int y = 0, Color color = BLACK)
         : x_(x), y_(y),  color_(color)
     {}
 
