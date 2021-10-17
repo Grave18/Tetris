@@ -5,6 +5,8 @@
 #include "level.h"
 #include "tile.h"
 #include "figures.h"
+#include "soundSystem.h"
+#include "observer.h"
 
 // player's default fall speed
 constexpr float DEFAULT_SPEED = 1.0f;
@@ -19,10 +21,9 @@ public:
     {
         placePlayerToStartPosition();
 
-        // Add level as observer
-        observers_.addObserver(level);
+        // add level as observer
+        observers_.addObserver(level_);
     }
-
     Player(Player&) = delete;
     Player(Player&&) = delete;
 
@@ -35,7 +36,6 @@ public:
         if (IsKeyPressed(KEY_S))  speed_ = SPRINT_SPEED;
         if (IsKeyReleased(KEY_S)) speed_ = DEFAULT_SPEED;
         if (IsKeyPressed(KEY_W))  tryToRotate();
-        if (IsKeyPressed(KEY_SPACE))  level_->clearRow(19);
 
 
         // God Mode
@@ -82,10 +82,9 @@ public:
         }
         else
         {
-            // fire fell event
+            // Fire fell event
             observers_.notify(this, Events::PLAYER_FELL);
-            level_->addFigure(player_, x_, static_cast<int>(y_));
-            TraceLog(LOG_INFO, "Fell_event");
+            TraceLog(LOG_INFO, "FELL_EVENT");
 
             placePlayerToStartPosition();
         }
@@ -103,8 +102,8 @@ public:
     int getX() const { return x_; }
     int getY() const { return static_cast<int>(y_); }
 
-    Subject& getObservers() { return observers_; }
     std::array<Tile, 4> getTiles() const { return player_; }
+    Subject& getObservers() { return observers_; }
 
 private:
     void tryToMove(const std::string_view& side)

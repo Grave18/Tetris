@@ -20,6 +20,7 @@
 #include "level.h"
 #include "graphics.h"
 #include "levelBounds.h"
+#include "soundSystem.h"
 
 int main()
 {
@@ -38,9 +39,14 @@ int main()
     SetTargetFPS(60);
 
     LevelBound levelBound{levelOffsetX, levelOffsetY, levelWidth, levelHeight, tileSize};
-    Graphics graphics(levelBound);
+    GraphicsSystem graphics(levelBound);
+    SoundSystem sound;
     Level level(levelBound);
     Player player(&level);
+
+    // add events
+    player.getObservers().addObserver(&sound);
+    level.getObservers().addObserver(&sound);
 
     while (!WindowShouldClose())
     {

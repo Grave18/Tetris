@@ -2,7 +2,7 @@
 
 #include <array>
 #include <algorithm>
-#include <execution>
+#include <string>
 
 #include "tile.h"
 #include "graphics.h"
@@ -65,19 +65,12 @@ public:
         {
             if (rows_[i] == 10)
             {
-                // TODO: fire ROW_CLEARED
                 clearRow(i);
                 TraceLog(LOG_INFO, "ROW_CLEARED_EVENT");
                 observers_.notify(this, Events::ROW_CLEARED);
             }
             else --i;
         }
-
-        //for (int i = rowsCount_ - 1; i >= 0; --i)
-        //    if (rows_[i] >= 10)
-        //    {
-        //        clearRow(i);
-        //    }
     }
 
     void addTile(int x, int y, Color color)
@@ -141,12 +134,7 @@ public:
 
     Subject& getObservers() { return observers_; }
 
-    void onNotify(void* entity, Events event) override
-    {
-        // TODO: delete this or refactor
-    }
-    
-   
+    void onNotify(void* entity, Events event) override;
 
 private:
     LevelBound bounds_;
