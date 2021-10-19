@@ -8,15 +8,15 @@
 #include "soundSystem.h"
 #include "observer.h"
 
-using Figure = std::array<Tile, 4>;
-
-// player's default fall speed
+// player's fall speeds
 constexpr float DEFAULT_SPEED = 1.0f;
 constexpr float SPRINT_SPEED = 8.0f;
 
 // Main player of all players
 class Player
 {
+    using Figure = std::array<Tile, 4>;
+
 public:
     explicit Player(Level* level)
         : level_(level)
