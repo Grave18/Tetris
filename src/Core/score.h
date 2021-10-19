@@ -9,7 +9,7 @@ constexpr int ROW_REWARD = 100;
 class Score : public Observer
 {
 public:
-	void update(const GraphicsSystem& graphics) const
+	void updateGraphics(const GraphicsSystem& graphics) const
 	{
 		graphics.drawScore(score_);
 	}
