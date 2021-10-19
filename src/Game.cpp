@@ -25,35 +25,15 @@
 
 int main()
 {
-    constexpr int windowWidth = 1920;
-    constexpr int windowHeight = 1080;
     const char* title = "Tetris";
+    constexpr float windowWidth = 800;
+    constexpr float windowHeight = 600;
+    constexpr int fps = 60;
 
-    // level window
-    // compile time select the size of tile by the size of the screen
-    constexpr int tileSize = windowHeight / 24;
-    constexpr int levelWidth = 10;
-    constexpr int levelHeight = 20;
-    constexpr int levelOffsetX = 100;
-    constexpr int levelOffsetY = 100;
-
-    // score window
-    constexpr int scoreOffsetX = levelOffsetX + levelWidth * tileSize + 100;
-    constexpr int scoreOffsetY = levelOffsetY;
-    constexpr int scoreWidth = 300;
-    constexpr int scoreHeight = 150;
-    constexpr int scorePositionX = 10;
-    constexpr int scorePositionY = 30;
-
-    InitWindow(windowWidth, windowHeight, title);
-    SetTargetFPS(60);
-
-    LevelBound levelBound{levelOffsetX, levelOffsetY, levelWidth, levelHeight, tileSize};
-    ScoreBound scoreBound{scoreOffsetX, scoreOffsetY, scoreWidth, scoreHeight, scorePositionX, scorePositionY};
-
-    GraphicsSystem graphics(levelBound, scoreBound);
+    GraphicsSystem graphics(title, windowWidth, windowHeight, fps);
     SoundSystem sound;
-    Level level(levelBound);
+
+    Level level;
     Player player(&level);
     Score score;
 
@@ -74,12 +54,10 @@ int main()
 
             level. updateGraphics(graphics);
             player.updateGraphics(graphics);
-            score.update(graphics);
+            score.updateGraphics(graphics);
             if (player.isInGodMode()) DrawFPS(10, 10);
             
 
         EndDrawing();
     }
-
-    CloseWindow();
 }

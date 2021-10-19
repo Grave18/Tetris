@@ -13,7 +13,7 @@
 class Level : public Observer
 {
 public:
-    explicit Level(const LevelBound& bounds);
+    explicit Level() = default;
     Level(Level&) = delete;
     Level(Level&&) = delete;
 
@@ -32,13 +32,14 @@ private:
 
     // index of neft not occupied tile
     int nextIndex_ = 0;
-    static const int MAX_SIZE = 200;
+    static const int LEVEL_WIDTH = 10;
+    static const int LEVEL_HEIGHT = 20;
+    static const int MAX_SIZE = LEVEL_WIDTH * LEVEL_HEIGHT;
     // object pool
     std::array<Tile, MAX_SIZE> level_;
 
     static const int rowsCount_ = 20;
     std::array<int, rowsCount_> rows_ {0};
 
-    LevelBound bounds_;
     Subject observers_;
 };

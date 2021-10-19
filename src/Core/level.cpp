@@ -1,16 +1,8 @@
 #include "level.h"
 #include "player.h"
-#include "observer.h"
+//#include "observer.h"
 
 // public:
-Level::Level(const LevelBound& bounds)
-    : bounds_(bounds)
-{
-    // temporary level fill
-    /*addTile(1, 7, GREEN);
-    addTile(9, 5, BLUE);*/
-}
-
 void Level::updateGraphics(const GraphicsSystem& graphics) const
 {
     graphics.drawLevelBackground();
@@ -25,7 +17,7 @@ void Level::updateGraphics(const GraphicsSystem& graphics) const
 bool Level::willNotCollideWith(int x, int y) const
 {
     // check level bounds
-    if (x < 0 || x >= bounds_.windowWidthInTiles || y >= bounds_.windowHeightInTiles)
+    if (x < 0 || x >= LEVEL_WIDTH || y >= LEVEL_HEIGHT)
         return false;
 
     // check each tile for collision
@@ -86,7 +78,6 @@ void Level::addTile(int x, int y, Color color)
         TraceLog(LOG_INFO, ("row " + std::to_string(y) + " = "
                             + std::to_string(rows_[y])).c_str());
     }
-
 }
 
 void Level::clearRow(int row)
