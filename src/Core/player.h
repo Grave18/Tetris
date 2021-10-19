@@ -8,7 +8,6 @@
 #include "soundSystem.h"
 #include "observer.h"
 
-// player's fall speeds
 constexpr float DEFAULT_SPEED = 1.0f;
 constexpr float SPRINT_SPEED = 8.0f;
 
@@ -202,4 +201,6 @@ private:
     Figure player_;
     Figure nextFigure_;
     Subject observers_;
+
+    // player's fall speeds
 };

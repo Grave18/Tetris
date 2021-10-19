@@ -3,8 +3,7 @@
 #include "observer.h"
 #include "graphics.h"
 
-constexpr int FIGURE_REWARD = 15;
-constexpr int ROW_REWARD = 100;
+
 
 class Score : public Observer
 {
@@ -20,7 +19,7 @@ public:
 		{
 			score_ += FIGURE_REWARD;
 		}
-		if (event == Events::ROW_CLEARED)
+		else if (event == Events::ROW_CLEARED)
 		{
 			score_ += ROW_REWARD;
 		}
@@ -28,4 +27,7 @@ public:
 
 private:
 	int score_ = 0;
+
+	const static int FIGURE_REWARD = 15;
+	const static int ROW_REWARD = 100;
 };

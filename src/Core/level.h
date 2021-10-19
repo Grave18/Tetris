@@ -6,7 +6,6 @@
 
 #include "tile.h"
 #include "graphics.h"
-#include "levelBounds.h"
 #include "observer.h"
 
 // Game level

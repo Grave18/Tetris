@@ -19,15 +19,14 @@
 #include "player.h"
 #include "level.h"
 #include "graphics.h"
-#include "levelBounds.h"
 #include "soundSystem.h"
 #include "score.h"
 
 int main()
 {
     const char* title = "Tetris";
-    constexpr float windowWidth = 800;
-    constexpr float windowHeight = 600;
+    constexpr float windowWidth = 1920;
+    constexpr float windowHeight = 1080;
     constexpr int fps = 60;
 
     GraphicsSystem graphics(title, windowWidth, windowHeight, fps);
