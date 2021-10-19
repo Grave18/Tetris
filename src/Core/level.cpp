@@ -37,7 +37,7 @@ void Level::clear()
 
 void Level::onNotify(void* entity, Events event)
 {
-    if (event == Events::PLAYER_FELL)
+    if (entity && event == Events::PLAYER_FELL)
     {
         auto player = static_cast<Player*>(entity);
 

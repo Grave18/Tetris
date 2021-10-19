@@ -26,7 +26,7 @@ public:
 	{
 		if (event == Events::ROW_CLEARED)
 			playSoundClearRow();
-		if (event == Events::PLAYER_FELL)
+		else if (event == Events::PLAYER_FELL)
 			playSoundPlayerFell();
 	}
 
