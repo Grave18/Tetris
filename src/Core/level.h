@@ -5,7 +5,7 @@
 #include <string>
 
 #include "tile.h"
-#include "graphics.h"
+#include "graphicsSystem.h"
 #include "observer.h"
 
 // Game level
