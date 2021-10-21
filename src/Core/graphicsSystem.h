@@ -9,11 +9,14 @@ class GraphicsSystem
 {
 public:
     GraphicsSystem(const char* title, float width, float height, int fps)
-        : title_(title), width_(width), height_(height), fps_(fps)
+        : title_(title), screenWidth_(width), screenHeight_(height), fps_(fps)
     {
         // init
-        InitWindow(static_cast<int>(width_), static_cast<int>(height_), title_);
+        InitWindow(static_cast<int>(screenWidth_), static_cast<int>(screenHeight_), title_);
         SetTargetFPS(fps_);
+        
+        // load resources
+        logo_ = LoadTexture("resources/raylib_logo_512.png");
     }
     GraphicsSystem(GraphicsSystem&) = delete;
     GraphicsSystem(GraphicsSystem&&) = delete;
@@ -22,6 +25,7 @@ public:
     ~GraphicsSystem()
     {
         // destroy
+        UnloadTexture(logo_);
         CloseWindow();
     }
 
@@ -60,47 +64,58 @@ public:
         const std::string text = std::to_string(score);
         const auto scoreX = static_cast<int>(score_.x + score_.width / 8);
         const auto scoreY = static_cast<int>(score_.y + score_.height / 5);
-        const auto fontSize = static_cast<int>(height_ / 10);
+        const auto fontSize = static_cast<int>(screenHeight_ / 10);
         const auto fontColor = WHITE;
         DrawText(text.c_str(), scoreX, scoreY, fontSize, fontColor);
     }
     
+    void drawLogo() const
+    {
+        DrawTexture(
+            logo_, 
+            static_cast<int>(screenWidth_) / 2 - logo_.width / 2,
+            static_cast<int>(screenHeight_) / 2 - logo_.height / 2,
+            RAYWHITE);
+    }
 
 private:
+    
+    Texture2D logo_;
+
     const char* title_;
-    float width_;
-    float height_;
+    float screenWidth_;
+    float screenHeight_;
     int fps_;
 
-    float tileSize_ = height_ / 24;    // 1080p -> 45
-    float frameWidth_ = height_ / 216; // 1080p -> 5
+    float tileSize_ = screenHeight_ / 24;    // 1080p -> 45
+    float frameWidth_ = screenHeight_ / 216; // 1080p -> 5
 
     // size of level in tiles
     float levelWidth_ = 10.0f;
     float levelHeight_ = 20.0f;
     Rectangle level_
     {
-        height_ / 10.0f,          // offset x
-        height_ / 10.0f,          // offsetY
+        screenHeight_ / 10.0f,          // offset x
+        screenHeight_ / 10.0f,          // offsetY
         levelWidth_ * tileSize_,  // width
         levelHeight_ * tileSize_  // height
     };
 
     Rectangle score_
     {
-        level_.x + level_.width + height_ / 10.0f, // offset x
-        height_ / 10.0f,                           // offsetY
-        height_ / 3.6f,                            // width
-        height_ / 7.2f                             // height
+        level_.x + level_.width + screenHeight_ / 10.0f, // offset x
+        screenHeight_ / 10.0f,                           // offsetY
+        screenHeight_ / 3.6f,                            // width
+        screenHeight_ / 7.2f                             // height
     };
 
-    Rectangle nextFigure_
-    {
-        level_.x + level_.width + height_ / 10.0f,  // offset x
-        score_.y + score_.height + height_ / 10.0f, // offsetY
-        height_ / 3.6f,                             // width
-        height_ / 7.2f                              // height
-    };
+    //Rectangle nextFigure_
+    //{
+    //    level_.x + level_.width + screenHeight_ / 10.0f,  // offset x
+    //    score_.y + score_.height + screenHeight_ / 10.0f, // offsetY
+    //    screenHeight_ / 3.6f,                             // width
+    //    screenHeight_ / 7.2f                              // height
+    //};
 
-    Rectangle stash_;
+    //Rectangle stash_;
 };
