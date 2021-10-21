@@ -20,9 +20,7 @@ public:
     explicit Player(Level* level)
         : level_(level)
     {
-        player_ = nextFigureRandom();
-        nextFigure_ = nextFigureRandom();
-        placePlayerToStartPosition();
+        reset();
     }
     Player(Player&) = delete;
     Player(Player&&) = delete;
@@ -87,8 +85,22 @@ public:
             firePlayerFellEvent();
             player_ = nextFigure_;
             nextFigure_ = nextFigureRandom();
-            placePlayerToStartPosition();
+            tryPlacePlayerToStartPosition();
         }
+    }
+
+    void tryPlacePlayerToStartPosition()
+    {
+        placePlayerToStartPosition();
+        bool isNotCollideWithWorld = std::all_of(player_.begin(), player_.end(),
+            [this](const auto& tile)
+            {
+                return level_->willNotCollideWith(x_ + tile.getX(),
+                                                  static_cast<int>(y_) + tile.getY());
+            });
+
+        if (!isNotCollideWithWorld)
+            isGameOther_ = true;
     }
 
     void updateGraphics(const GraphicsSystem& graphics) const
@@ -99,7 +111,15 @@ public:
         }
     }
 
+    void reset() 
+    {
+        isGameOther_ = false;
+        player_ = nextFigureRandom();
+        nextFigure_ = nextFigureRandom();
+        placePlayerToStartPosition();
+    }
     bool isInGodMode() const { return isInGodMode_; }
+    bool isGameOver() const { return isGameOther_;  }
     int getX() const { return x_; }
     int getY() const { return static_cast<int>(y_); }
 
@@ -196,11 +216,13 @@ private:
     int x_ = 0;
     float y_ = 0.0f;
     float speed_ = DEFAULT_SPEED;
-    bool isInGodMode_ = true;
     Level* level_;
     Figure player_;
     Figure nextFigure_;
     Subject observers_;
+
+    bool isInGodMode_ = true;
+    bool isGameOther_ = false;
 
     // player's fall speeds
 };
