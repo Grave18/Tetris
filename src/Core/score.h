@@ -1,9 +1,7 @@
 #pragma once
 
 #include "observer.h"
-#include "graphics.h"
-
-
+#include "graphicsSystem.h"
 
 class Score : public Observer
 {
@@ -13,7 +11,7 @@ public:
 		graphics.drawScore(score_);
 	}
 
-	void onNotify(void* entity, Events event)
+	void onNotify(void* entity, Events event) override
 	{
 		if (event == Events::PLAYER_FELL)
 		{
