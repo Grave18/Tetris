@@ -26,7 +26,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\figures.h" />
-    <ClInclude Include="src\Core\graphics.h" />
+    <ClInclude Include="src\Core\graphicsSystem.h" />
+    <ClInclude Include="src\Core\menuSystem.h" />
     <ClInclude Include="src\Core\observer.h" />
     <ClInclude Include="src\Core\player.h" />
     <ClInclude Include="src\Core\soundSystem.h" />
@@ -134,28 +135,28 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;C:\dev\dependencies\raylib\raylib_3.7.0\examples;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>C:\dev\dependencies\raylib\raylib_3.7.0\projects\VS2019\build\raylib\bin\x64\Debug.DLL;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;C:\dev\dependencies\raylib\raylib_3.7.0\examples;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>C:\dev\dependencies\raylib\raylib_3.7.0\projects\VS2019\build\raylib\bin\x64\Release.DLL;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;C:\dev\dependencies\raylib\raylib_3.7.0\examples;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>C:\dev\dependencies\raylib\raylib_3.7.0\projects\VS2019\build\raylib\bin\x64\Debug.DLL;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>C:\dev\dependencies\raylib\raylib_3.7.0\src;C:\dev\dependencies\raylib\raylib_3.7.0\examples;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>C:\dev\dependencies\raylib\raylib_3.7.0\projects\VS2019\build\raylib\bin\x64\Release.DLL;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\intermediates\$(Platform)\$(Configuration)\</IntDir>
