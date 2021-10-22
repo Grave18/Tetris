@@ -12,6 +12,8 @@ public:
         : screenWidth_(screenWidth), screenHeight_(screenHeight)
     { }
 
+    // TODO: alignments(centered, topleft)
+    
     // r prefix - 0.0f to 1.0f (relative to screen size)
     void text(const std::string_view& text, float rFontSize, float rX, float rY, const Color& color = BLACK) const
     {
@@ -33,7 +35,7 @@ public:
     }
 
     // r prefix - 0.0f to 1.0f (relative to screen size)
-    void button(const std::string_view& text, float rFontSize, float rX, float rY, Rectangle& outBounds, const Vector2& mousePos, const Color& textColor = BLACK, const Color& frameColor = BLACK) const
+    bool button(const std::string_view& text, float rFontSize, float rX, float rY, const Vector2& mousePos, bool isPressed, const Color& textColor = BLACK, const Color& frameColor = BLACK) const
     {
         correctFloatRange01(rFontSize);
         correctFloatRange01(rX);
@@ -49,23 +51,25 @@ public:
             screenHeight_ * rY - textSize.y / 2.0f
         };
 
-        float playOffset = screenWidth_ / 100.0f;
-        outBounds.x = position.x - playOffset;
-        outBounds.y = position.y - playOffset;
-        outBounds.width = textSize.x + playOffset * 2;
-        outBounds.height = textSize.y + playOffset * 2;
+        float frameOffset = screenWidth_ / 130.0f;
+        Rectangle bounds
+        {
+            position.x - frameOffset,
+            position.y - frameOffset,
+            textSize.x + frameOffset * 2,
+            textSize.y + frameOffset * 2
+        };
 
+        // text
         DrawTextEx(font, text.data(), position, fontSize, spacing, textColor);
-        if (CheckCollisionPointRec(mousePos, outBounds))
-            //TODO: magic number 5
-            DrawRectangleLinesEx(outBounds, 5, frameColor); 
-    }
 
-    bool isButtonPressed(const Rectangle& buttonBounds, const Vector2& mousePos, bool isAnykeyPressed) const
-    {
-        if (CheckCollisionPointRec(mousePos, buttonBounds) && isAnykeyPressed)
+        // select frame
+        const auto lineThick = static_cast<int>(screenWidth_ / 200.0f);
+        if (CheckCollisionPointRec(mousePos, bounds))
+            DrawRectangleLinesEx(bounds, lineThick, frameColor); 
+
+        if (CheckCollisionPointRec(mousePos, bounds) && isPressed)
             return true;
-
         return false;
     }
 
@@ -76,8 +80,7 @@ public:
         correctFloatRange01(rY);
         correctFloatRange01(rWidth);
         correctFloatRange01(rHeight);
-
-        // TODO: alignments(centered, topleft)
+        
         Rectangle bounds
         {
             screenWidth_ * rX - screenWidth_ *rWidth / 2.0f,
@@ -94,8 +97,9 @@ public:
         bodyBounds.width = width;
 
         DrawRectangleRec(bodyBounds, bodyColor);
-        //TODO: 5
-        DrawRectangleLinesEx(bounds, 5, frameColor);
+        
+        const auto lineThick = static_cast<int>(screenWidth_ / 200.0f);
+        DrawRectangleLinesEx(bounds, lineThick, frameColor);
 
         // normalize to 0.0f to 1.0f
         return width / screenWidth_ / rWidth;
@@ -110,9 +114,4 @@ private:
 
     float screenWidth_;
     float screenHeight_;
-};
-
-class Button
-{
-
 };

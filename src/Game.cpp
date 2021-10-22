@@ -34,8 +34,10 @@ enum class GameScreens
 int main()
 {
     const char* title = "Tetris";
-    constexpr int screenWidth = 1920;
-    constexpr int screenHeight = 1080;
+    /*constexpr int screenWidth = 1920;
+    constexpr int screenHeight = 1080;*/
+    constexpr int screenWidth = 800;
+    constexpr int screenHeight = 600;
     constexpr int fps = 60;
 
     GraphicsSystem graphics(title, screenWidth, screenHeight, fps);
@@ -63,9 +65,11 @@ int main()
         Vector2 mousePos = GetMousePosition();
         bool isLeftMouseButtonPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 
+        
         BeginDrawing();
             ClearBackground(RAYWHITE);
 
+            // Interface state machine
             switch (currentScreen)
             {
             case GameScreens::INTRO:
@@ -85,51 +89,49 @@ int main()
                 menu.text("Menu", 0.1f, 0.5f, 0.1f);
 
                 // play button
-                Rectangle playButtonBounds;
-                menu.button("Play", 0.05f, 0.5f, 0.3f, playButtonBounds, mousePos);
-
-                if (menu.isButtonPressed(playButtonBounds, mousePos, isLeftMouseButtonPressed))
+                bool isPressed =
+                    menu.button("Play", 0.05f, 0.5f, 0.3f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
                 {
                     player.reset();
                     currentScreen = GameScreens::GAMEPLAY;
                 }
 
                 // options button
-                Rectangle optionsButtonBounds;
-                menu.button("Options", 0.05f, 0.5f, 0.4f, optionsButtonBounds, mousePos);
-
-                if (menu.isButtonPressed(optionsButtonBounds, mousePos, isLeftMouseButtonPressed))
-                {
+                isPressed = 
+                    menu.button("Options", 0.05f, 0.5f, 0.4f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
                     currentScreen = GameScreens::OPTIONS;
-                }
                 
                 break;
             }
 
             case GameScreens::OPTIONS:
             {
+                // sound volume bar
                 menu.text("Volume:", 0.05f, 0.15f, 0.1f);
-                float soundVolume = menu.scrollBar(0.45f, 0.1f, 0.3f, 0.06f, mousePos, isLeftMouseButtonPressed, 0.5f);
+                float soundVolume =
+                    menu.scrollBar(0.45f, 0.1f, 0.3f, 0.06f, mousePos, isLeftMouseButtonPressed, 0.5f);
                 sound.setSoundVolume(soundVolume);
 
-                Rectangle backButtonBounds;
-                menu.button("Back", 0.05f, 0.15f, 0.2f, backButtonBounds, mousePos);
-
-                if (menu.isButtonPressed(backButtonBounds, mousePos, isLeftMouseButtonPressed))
-                {
+                // back button
+                bool isPressed = 
+                    menu.button("Back", 0.05f, 0.15f, 0.2f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
                     currentScreen = GameScreens::MENU;
-                }
                 
                 break;
             }
 
             case GameScreens::GAMEPLAY:
             {
+                // logic
                 player.updateInput();
                 player.updateMovement(dt);
                 if (player.isGameOver())
                     currentScreen = GameScreens::GAMEOVER;
 
+                // darawing
                 level.updateGraphics(graphics);
                 player.updateGraphics(graphics);
                 score.updateGraphics(graphics);
@@ -139,10 +141,12 @@ int main()
             }
             case GameScreens::GAMEOVER:
             {
+                // logic
                 timeToMenuScreen += dt;
                 if (timeToMenuScreen > 3.0f)
                     currentScreen = GameScreens::MENU;
 
+                // drawing
                 const char* text = "GameOver";
                 const int fontSize = 200;
                 const int textWidth = MeasureText(text, fontSize);
