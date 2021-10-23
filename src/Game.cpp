@@ -34,21 +34,19 @@ enum class GameScreens
 int main()
 {
     const char* title = "Tetris";
-    /*constexpr int screenWidth = 1920;
-    constexpr int screenHeight = 1080;*/
-    constexpr int screenWidth = 800;
-    constexpr int screenHeight = 600;
+    constexpr int windowWidth = 640;
+    constexpr int windowHeight = 480;
     constexpr int fps = 60;
 
-    GraphicsSystem graphics(title, screenWidth, screenHeight, fps);
+    GraphicsSystem graphics(title, windowWidth, windowHeight, fps);
     SoundSystem sound;
-    MenuSystem menu(screenWidth, screenHeight);
+    MenuSystem menu(windowWidth, windowHeight);
 
     Level level;
     Player player(&level);
     Score score;
 
-    GameScreens currentScreen = GameScreens::INTRO;
+    GameScreens currentScreen = GameScreens::OPTIONS;
 
     // add events
     player.fellEvent().addObserver(&level);
@@ -65,7 +63,6 @@ int main()
         Vector2 mousePos = GetMousePosition();
         bool isLeftMouseButtonPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 
-        
         BeginDrawing();
             ClearBackground(RAYWHITE);
 
@@ -113,6 +110,7 @@ int main()
                 float soundVolume =
                     menu.scrollBar(0.45f, 0.1f, 0.3f, 0.06f, mousePos, isLeftMouseButtonPressed, 0.5f);
                 sound.setSoundVolume(soundVolume);
+                //DrawText(std::to_string(soundVolume).c_str(), 20, 20, 20, BLACK);
 
                 // back button
                 bool isPressed = 
@@ -120,6 +118,34 @@ int main()
                 if (isPressed)
                     currentScreen = GameScreens::MENU;
                 
+                // resolution buttons
+                menu.text("Resolution:", 0.05f, 0.20f, 0.3f);
+
+                isPressed = menu.button("480p", 0.05f, 0.15f, 0.4f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                {
+                    int newWidth = 640;
+                    int newHeight = 480;
+                    graphics.resizeWindow(newWidth, newHeight);
+                    menu.resize(newWidth, newHeight);
+                }
+                isPressed = menu.button("600p", 0.05f, 0.15f, 0.5f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                {
+                    int newWidth = 800;
+                    int newHeight = 600;
+                    graphics.resizeWindow(newWidth, newHeight);
+                    menu.resize(newWidth, newHeight);
+                }
+                isPressed = menu.button("1080p", 0.05f, 0.15f, 0.6f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                {
+                    int newWidth = 1920;
+                    int newHeight = 1080;
+                    graphics.resizeWindow(newWidth, newHeight);
+                    menu.resize(newWidth, newHeight);
+                }
+
                 break;
             }
 
@@ -150,7 +176,7 @@ int main()
                 const char* text = "GameOver";
                 const int fontSize = 200;
                 const int textWidth = MeasureText(text, fontSize);
-                DrawText(text, screenWidth / 2 - textWidth / 2, screenHeight / 5, fontSize, BLACK);
+                DrawText(text, windowWidth / 2 - textWidth / 2, windowHeight / 5, fontSize, BLACK);
                 break;
             }
             default:

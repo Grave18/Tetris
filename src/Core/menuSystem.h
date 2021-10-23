@@ -12,6 +12,12 @@ public:
         : screenWidth_(screenWidth), screenHeight_(screenHeight)
     { }
 
+    void resize(int windowWidth, int windowHeight)
+    {
+        screenWidth_ = static_cast<float>(windowWidth);
+        screenHeight_ = static_cast<float>(windowHeight);
+    }
+
     // TODO: alignments(centered, topleft)
     
     // r prefix - 0.0f to 1.0f (relative to screen size)
@@ -73,6 +79,7 @@ public:
         return false;
     }
 
+    // TODO: try make scrollBar class
     // r prefix float must be 0.0f to 1.0f (relative to screen size)
     float scrollBar(float rX, float rY, float rWidth, float rHeight, Vector2 mousePos, bool isAnykeyPressed, float barSize = 1.0f, const Color& bodyColor = RED, const Color& frameColor = BLACK ) const
     {
@@ -88,13 +95,11 @@ public:
             screenWidth_ * rWidth,
             screenHeight_ * rHeight
         };
-
-        // TODO: try make scrollBar class
         Rectangle bodyBounds = bounds;
-        static float width = screenWidth_ * rWidth * barSize;
+        static float width = rWidth * barSize;
         if (CheckCollisionPointRec(mousePos, bounds) && isAnykeyPressed)
-            width = mousePos.x - bounds.x;
-        bodyBounds.width = width;
+            width = (mousePos.x - bounds.x) / screenWidth_;
+        bodyBounds.width = width * screenWidth_;
 
         DrawRectangleRec(bodyBounds, bodyColor);
         
@@ -102,7 +107,7 @@ public:
         DrawRectangleLinesEx(bounds, lineThick, frameColor);
 
         // normalize to 0.0f to 1.0f
-        return width / screenWidth_ / rWidth;
+        return width / rWidth;
     }
 
 private:

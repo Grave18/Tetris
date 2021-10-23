@@ -29,6 +29,13 @@ public:
         CloseWindow();
     }
 
+    void resizeWindow(int windowWidth, int windowHeight)
+    {
+        SetWindowSize(windowWidth, windowHeight);
+        screenWidth_ = static_cast<float>(windowWidth);
+        screenHeight_ = static_cast<float>(windowHeight);
+    }
+
     void drawTile(const Tile& tile, int worldX = 0, int worldY = 0) const
     {
         if (worldY + tile.getY() >= 0)
