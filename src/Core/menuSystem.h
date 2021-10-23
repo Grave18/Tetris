@@ -8,14 +8,15 @@
 class MenuSystem
 {
 public:
-    MenuSystem(float screenWidth, float screenHeight)
-        : screenWidth_(screenWidth), screenHeight_(screenHeight)
+    MenuSystem(int screenWidth, int screenHeight)
+        : screenWidth_(static_cast<float>(screenWidth))
+        , screenHeight_(static_cast<float>(screenHeight))
     { }
 
-    void resize(float windowWidth, float windowHeight)
+    void resize(int windowWidth, int windowHeight)
     {
-        screenWidth_ = windowWidth;
-        screenHeight_ = windowHeight;
+        screenWidth_ = static_cast<float>(windowWidth);
+        screenHeight_ = static_cast<float>(windowHeight);
     }
 
     // TODO: alignments(centered, topleft)
