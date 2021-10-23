@@ -34,8 +34,8 @@ enum class GameScreens
 int main()
 {
     const char* title = "Tetris";
-    constexpr int windowWidth = 640;
-    constexpr int windowHeight = 480;
+    constexpr int windowWidth = 800;
+    constexpr int windowHeight = 600;
     constexpr int fps = 60;
 
     GraphicsSystem graphics(title, windowWidth, windowHeight, fps);
@@ -173,10 +173,7 @@ int main()
                     currentScreen = GameScreens::MENU;
 
                 // drawing
-                const char* text = "GameOver";
-                const int fontSize = 200;
-                const int textWidth = MeasureText(text, fontSize);
-                DrawText(text, windowWidth / 2 - textWidth / 2, windowHeight / 5, fontSize, BLACK);
+                menu.text("GameOver", 0.1f, 0.5f, 0.5f);
                 break;
             }
             default:

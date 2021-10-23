@@ -12,10 +12,10 @@ public:
         : screenWidth_(screenWidth), screenHeight_(screenHeight)
     { }
 
-    void resize(int windowWidth, int windowHeight)
+    void resize(float windowWidth, float windowHeight)
     {
-        screenWidth_ = static_cast<float>(windowWidth);
-        screenHeight_ = static_cast<float>(windowHeight);
+        screenWidth_ = windowWidth;
+        screenHeight_ = windowHeight;
     }
 
     // TODO: alignments(centered, topleft)
