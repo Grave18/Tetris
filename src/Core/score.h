@@ -6,6 +6,11 @@
 class Score : public Observer
 {
 public:
+	void clear()
+	{
+		score_ = 0;
+	}
+
 	void updateGraphics(const GraphicsSystem& graphics) const
 	{
 		graphics.drawScore(score_);
