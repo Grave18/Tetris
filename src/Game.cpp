@@ -46,7 +46,7 @@ int main()
     Player player(&level);
     Score score;
 
-    GameScreens currentScreen = GameScreens::GAMEPLAY;
+    GameScreens currentScreen = GameScreens::INTRO;
 
     // add events
     player.fellEvent().addObserver(&level);
@@ -89,10 +89,7 @@ int main()
                 bool isPressed =
                     menu.button("Play", 0.05f, 0.5f, 0.3f, mousePos, isLeftMouseButtonPressed);
                 if (isPressed)
-                {
-                    player.reset();
                     currentScreen = GameScreens::GAMEPLAY;
-                }
 
                 // options button
                 isPressed = 
@@ -126,7 +123,7 @@ int main()
                 {
                     int newWidth = 640;
                     int newHeight = 480;
-                    graphics.resizeWindow(newWidth, newHeight);
+                    graphics.resize(newWidth, newHeight);
                     menu.resize(newWidth, newHeight);
                 }
                 isPressed = menu.button("600p", 0.05f, 0.15f, 0.5f, mousePos, isLeftMouseButtonPressed);
@@ -134,7 +131,7 @@ int main()
                 {
                     int newWidth = 800;
                     int newHeight = 600;
-                    graphics.resizeWindow(newWidth, newHeight);
+                    graphics.resize(newWidth, newHeight);
                     menu.resize(newWidth, newHeight);
                 }
                 isPressed = menu.button("1080p", 0.05f, 0.15f, 0.6f, mousePos, isLeftMouseButtonPressed);
@@ -142,7 +139,7 @@ int main()
                 {
                     int newWidth = 1920;
                     int newHeight = 1080;
-                    graphics.resizeWindow(newWidth, newHeight);
+                    graphics.resize(newWidth, newHeight);
                     menu.resize(newWidth, newHeight);
                 }
 
@@ -152,12 +149,19 @@ int main()
             case GameScreens::GAMEPLAY:
             {
                 // logic
+                if (player.isGameOver())
+                {
+                    // reset level
+                    score.clear();
+                    level.clear();
+                    player.reset();
+                    currentScreen = GameScreens::GAMEOVER;
+                }
                 player.updateInput();
                 player.updateMovement(dt);
-                if (player.isGameOver())
-                    currentScreen = GameScreens::GAMEOVER;
 
                 // darawing
+                graphics.drawBackground();
                 level.updateGraphics(graphics);
                 player.updateGraphics(graphics);
                 score.updateGraphics(graphics);
