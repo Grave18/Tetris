@@ -121,6 +121,8 @@ int main()
                 isPressed = menu.button("480p", 0.05f, 0.15f, 0.4f, mousePos, isLeftMouseButtonPressed);
                 if (isPressed)
                 {
+                    //TODO: fix this kostyl
+                    isLeftMouseButtonPressed = false;
                     int newWidth = 640;
                     int newHeight = 480;
                     graphics.resize(newWidth, newHeight);
@@ -129,6 +131,8 @@ int main()
                 isPressed = menu.button("600p", 0.05f, 0.15f, 0.5f, mousePos, isLeftMouseButtonPressed);
                 if (isPressed)
                 {
+                    //TODO: fix this kostyl
+                    isLeftMouseButtonPressed = false;
                     int newWidth = 800;
                     int newHeight = 600;
                     graphics.resize(newWidth, newHeight);
