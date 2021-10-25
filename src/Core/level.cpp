@@ -1,18 +1,13 @@
 #include "level.h"
 #include "player.h"
+#include <cassert>
 //#include "observer.h"
 
 // public:
 void Level::updateGraphics(const GraphicsSystem& graphics) const
 {
-    graphics.drawBackground();
-
-    //TODO: place to draw level
     // draw level tiles
-    for (int i = 0; i < nextIndex_; ++i)
-    {
-        graphics.drawTile(level_[i]);
-    }
+    graphics.drawLevel(level_, nextIndex_);
 }
 
 bool Level::willNotCollideWith(int x, int y) const
@@ -23,16 +18,16 @@ bool Level::willNotCollideWith(int x, int y) const
 
     // check each tile for collision
     return std::none_of(level_.begin(), level_.begin() + nextIndex_,
-                        [x, y](const auto& tile)
-    {
-        return x == tile.getX() && y == tile.getY();
-    });
+        [x, y](const auto& tile)
+        {
+            return x == tile.getX() && y == tile.getY();
+        });
 }
 
 void Level::clear()
 {
     nextIndex_ = 0;
-    rows_ = { 0 };
+    rows_ = {0};
     TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
 }
 
@@ -69,6 +64,10 @@ void Level::scanRows()
 
 void Level::addTile(int x, int y, Color color)
 {
+    //if (y < 0) y = 0;
+    assert(y > -1 && "addTile() y must be grater then 0!");
+    assert(y < 20 && "addTile() y must be less then 20!");
+
     if (nextIndex_ != MAX_SIZE)
     {
         level_[nextIndex_].setTile(x, y, color);

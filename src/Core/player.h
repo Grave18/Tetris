@@ -22,8 +22,14 @@ public:
     {
         reset();
     }
-    Player(Player&) = delete;
-    Player(Player&&) = delete;
+
+    void reset() 
+    {
+        gameOther_ = false;
+        player_ = nextFigureRandom();
+        nextFigure_ = nextFigureRandom();
+        placePlayerToStartPosition();
+    }
 
     // Input
     void updateInput()
@@ -37,8 +43,8 @@ public:
 
 
         // GodMode
-        if (IsKeyPressed(KEY_Q)) isInGodMode_ = !isInGodMode_;
-        if (isInGodMode_)
+        if (IsKeyPressed(KEY_Q)) godMode_ = !godMode_;
+        if (godMode_)
         {
             if (IsKeyPressed(KEY_LEFT_SHIFT)) speed_ = SPRINT_SPEED * 3;
             if (IsKeyReleased(KEY_LEFT_SHIFT)) speed_ = DEFAULT_SPEED;
@@ -82,16 +88,39 @@ public:
             y_ = tmpY;
         else
         {
+            if (detectGameover())
+                return;
+
             firePlayerFellEvent();
             player_ = nextFigure_;
             nextFigure_ = nextFigureRandom();
-            tryPlacePlayerToStartPosition();
+            placePlayerToStartPosition();
         }
     }
 
-    void tryPlacePlayerToStartPosition()
+
+    void updateGraphics(const GraphicsSystem& graphics) const
     {
-        placePlayerToStartPosition();
+        // draw player
+        graphics.drawPlayer(player_, x_, static_cast<int>(y_));
+
+        // draw nextFigure
+        graphics.drawNextFigure(nextFigure_);
+
+        // TODO: draw stash
+    }
+
+    bool isInGodMode() const { return godMode_; }
+    bool isGameOver() const { return gameOther_;  }
+    int getX() const { return x_; }
+    int getY() const { return static_cast<int>(y_); }
+
+    Figure getTiles() const { return player_; }
+    Subject& fellEvent() { return observers_; }
+
+private:
+    bool detectGameover()
+    {
         bool isNotCollideWithWorld = std::all_of(player_.begin(), player_.end(),
             [this](const auto& tile)
             {
@@ -100,39 +129,14 @@ public:
             });
 
         if (!isNotCollideWithWorld)
-            isGameOther_ = true;
-    }
-
-    void updateGraphics(const GraphicsSystem& graphics) const
-    {
-        // draw player
-        for (const auto& tile : player_)
         {
-            graphics.drawTile(tile, x_, static_cast<int>(y_));
+            gameOther_ = true;
+            return true;
         }
 
-        // draw nextFigure
-        graphics.drawNextFigure(nextFigure_);
-
-        // TODO: draw stash
+        return false;
     }
 
-    void reset() 
-    {
-        isGameOther_ = false;
-        player_ = nextFigureRandom();
-        nextFigure_ = nextFigureRandom();
-        placePlayerToStartPosition();
-    }
-    bool isInGodMode() const { return isInGodMode_; }
-    bool isGameOver() const { return isGameOther_;  }
-    int getX() const { return x_; }
-    int getY() const { return static_cast<int>(y_); }
-
-    Figure getTiles() const { return player_; }
-    Subject& fellEvent() { return observers_; }
-
-private:
     void tryToMove(const std::string_view& side)
     {
         int tmpX = 0;
@@ -182,7 +186,7 @@ private:
     void placePlayerToStartPosition()
     {
         x_ = 4;
-        y_ = 0.0f;
+        y_ = 1.0f;
     }
     
     [[nodiscard]]
@@ -211,6 +215,6 @@ private:
     Figure nextFigure_;
     Subject observers_;
 
-    bool isInGodMode_ = true;
-    bool isGameOther_ = false;
+    bool godMode_ = true;
+    bool gameOther_ = false;
 };
