@@ -5,8 +5,9 @@
 // public:
 void Level::updateGraphics(const GraphicsSystem& graphics) const
 {
-    graphics.drawLevelBackground();
+    graphics.drawBackground();
 
+    //TODO: place to draw level
     // draw level tiles
     for (int i = 0; i < nextIndex_; ++i)
     {

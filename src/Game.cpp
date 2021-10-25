@@ -46,7 +46,7 @@ int main()
     Player player(&level);
     Score score;
 
-    GameScreens currentScreen = GameScreens::OPTIONS;
+    GameScreens currentScreen = GameScreens::GAMEPLAY;
 
     // add events
     player.fellEvent().addObserver(&level);

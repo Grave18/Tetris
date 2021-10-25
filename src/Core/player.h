@@ -105,10 +105,16 @@ public:
 
     void updateGraphics(const GraphicsSystem& graphics) const
     {
+        // draw player
         for (const auto& tile : player_)
         {
             graphics.drawTile(tile, x_, static_cast<int>(y_));
         }
+
+        // draw nextFigure
+        graphics.drawNextFigure(nextFigure_);
+
+        // TODO: draw stash
     }
 
     void reset() 
@@ -175,8 +181,8 @@ private:
 
     void placePlayerToStartPosition()
     {
-        x_ = 5;
-        y_ = 3.0f;
+        x_ = 4;
+        y_ = 0.0f;
     }
     
     [[nodiscard]]
@@ -186,30 +192,14 @@ private:
 
         switch (random)
         {
-        case 1:
-            return Figures::o;
-            break;
-        case 2:
-            return Figures::i;
-            break;
-        case 3:
-            return Figures::s;
-            break;
-        case 4:
-            return Figures::z;
-            break;
-        case 5:
-            return Figures::l;
-            break;
-        case 6:
-            return Figures::j;
-            break;
-        case 7:
-            return Figures::t;
-            break;
-
-        default:
-            return Figures::o;
+        case 1: return Figures::o; break;
+        case 2: return Figures::i; break;
+        case 3: return Figures::s; break;
+        case 4: return Figures::z; break;
+        case 5: return Figures::l; break;
+        case 6: return Figures::j; break;
+        case 7: return Figures::t; break;
+        default: return Figures::o;
         }
     }
 
@@ -223,6 +213,4 @@ private:
 
     bool isInGodMode_ = true;
     bool isGameOther_ = false;
-
-    // player's fall speeds
 };
