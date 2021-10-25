@@ -2,12 +2,12 @@
 
 std::array<Tile, 4> Figures::o
 {
-	{{ 0, 0, YELLOW }, { 0, 1, YELLOW }, { 1, 0, YELLOW }, { 1, 1, YELLOW }}
+	{{ 0, -1, YELLOW }, { 1, -1, YELLOW }, { 0, 0, YELLOW }, { 1, 0, YELLOW }}
 };
 
 std::array<Tile, 4> Figures::i
 {
-	{{0, -2, SKYBLUE }, { 0,-1, SKYBLUE }, { 0, 0, SKYBLUE}, { 0, 1, SKYBLUE }}
+	{{-1, 0, SKYBLUE }, { 0, 0, SKYBLUE }, { 1, 0, SKYBLUE}, { 2, 0, SKYBLUE }}
 };
 
 std::array<Tile, 4> Figures::s
@@ -22,12 +22,12 @@ std::array<Tile, 4> Figures::z
 
 std::array<Tile, 4> Figures::l
 {
-	{{ 0,-1, ORANGE }, { 0, 0, ORANGE }, { 0, 1, ORANGE }, { 1, 1, ORANGE }}
+	{{ -1, -1, ORANGE }, { -1, 0, ORANGE }, { 0, 0, ORANGE }, { 1, 0, ORANGE }}
 };
 
 std::array<Tile, 4> Figures::j
 {
-	{{-1, 1, PINK }, { 0,-1, PINK }, { 0, 0, PINK }, { 0, 1, PINK }}
+	{{-1, -1, PINK }, { 0,-1, PINK }, { 1, -1, PINK }, { -1, 0, PINK }}
 };
 
 std::array<Tile, 4> Figures::t
