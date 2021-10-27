@@ -2,13 +2,20 @@
 
 using Figure = std::array<Tile, 4>;
 
-GraphicsSystem::GraphicsSystem(const char* title, int windowWidth, int windowHeight, int fps)
+GraphicsSystem::GraphicsSystem(const char* title,
+                               int windowWidth,
+                               int windowHeight,
+                               int fps)
     : screenWidth_ (static_cast<float>(windowWidth ))
     , screenHeight_(static_cast<float>(windowHeight))
 {
     // init
-    InitWindow(static_cast<int>(screenWidth_), static_cast<int>(screenHeight_), title);
+    InitWindow(static_cast<int>(screenWidth_),
+               static_cast<int>(screenHeight_),
+               title);
     SetTargetFPS(fps);
+
+    resetStructs();
 
     // load resources
     logo_ = LoadTexture("resources/raylib_logo_512.png");
@@ -26,7 +33,10 @@ void GraphicsSystem::resize(int windowWidth, int windowHeight)
     SetWindowSize(windowWidth, windowHeight);
     screenWidth_ = static_cast<float>(windowWidth);
     screenHeight_ = static_cast<float>(windowHeight);
+    
+    resetStructs();
 }
+
 
 void GraphicsSystem::drawLogo() const
 {
@@ -110,4 +120,26 @@ void GraphicsSystem::drawTile(const Tile& tile, int worldX, int worldY) const
         DrawRectangleRounded(tileRec, roundness, 1, tile.getColor());
         DrawRectangleRoundedLines(tileRec, roundness, 1, lineThick, BLACK);
     }
+}
+
+void GraphicsSystem::resetStructs()
+{
+    tileSize_ = screenHeight_ / 24;    // 1080p -> 45
+    frameWidth_ = screenHeight_ / 216; // 1080p -> 5
+   
+    level_.x      = screenHeight_ / 10.0f;    // offset x
+    level_.y      = screenHeight_ / 10.0f;    // offsetY
+    level_.width  = levelWidth_ * tileSize_;  // width
+    level_.height = levelHeight_ * tileSize_; // height
+    
+    score_.x      = level_.x + level_.width + screenHeight_ / 10.0f; // offset x
+    score_.y      = screenHeight_ / 10.0f;                           // offsetY
+    score_.width  = screenHeight_ / 3.6f;                            // width
+    score_.height = screenHeight_ / 7.2f;                            // height
+    
+    nextFigure_.x      = level_.x + level_.width + screenHeight_ / 10.0f;  // offset x
+    nextFigure_.y      = score_.y + score_.height + screenHeight_ / 10.0f; // offsetY
+    nextFigure_.width  = screenHeight_ / 3.6f;                             // width
+    nextFigure_.height = screenHeight_ / 7.2f;                             // height
+
 }
