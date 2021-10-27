@@ -2,7 +2,6 @@
 
 #include <string>
 #include <string_view>
-
 #include <raylib.h>
 
 class MenuSystem
