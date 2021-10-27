@@ -8,9 +8,6 @@
 #include "soundSystem.h"
 #include "observer.h"
 
-constexpr float DEFAULT_SPEED = 1.0f;
-constexpr float SPRINT_SPEED = 8.0f;
-
 // Main player of all players
 class Player
 {
@@ -97,7 +94,6 @@ public:
             placePlayerToStartPosition();
         }
     }
-
 
     void updateGraphics(const GraphicsSystem& graphics) const
     {
@@ -206,6 +202,9 @@ private:
         default: return Figures::o;
         }
     }
+
+    const float DEFAULT_SPEED = 1.0f;
+    const float SPRINT_SPEED = 8.0f;
 
     int x_ = 0;
     float y_ = 0.0f;
