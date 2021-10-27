@@ -178,10 +178,14 @@ int main()
                 // logic
                 timeToMenuScreen += dt;
                 if (timeToMenuScreen > 3.0f)
+                {
                     currentScreen = GameScreens::MENU;
+                    timeToMenuScreen = 0.0f;
+                }
 
                 // drawing
                 menu.text("GameOver", 0.1f, 0.5f, 0.5f);
+
                 break;
             }
             default:
