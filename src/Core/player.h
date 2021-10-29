@@ -34,8 +34,8 @@ public:
         // movement input
         if (IsKeyPressed(KEY_A))  tryToMove("left");
         if (IsKeyPressed(KEY_D))  tryToMove("right");
-        if (IsKeyPressed(KEY_S))  speed_ = SPRINT_SPEED;
-        if (IsKeyReleased(KEY_S)) speed_ = DEFAULT_SPEED;
+        if (IsKeyDown(KEY_S))     speed_ = sprintSpeed_;
+        if (IsKeyUp(KEY_S))       speed_ = defaultSpeed_;
         if (IsKeyPressed(KEY_W))  tryToRotate();
 
 
@@ -43,8 +43,6 @@ public:
         if (IsKeyPressed(KEY_Q)) godMode_ = !godMode_;
         if (godMode_)
         {
-            if (IsKeyPressed(KEY_LEFT_SHIFT)) speed_ = SPRINT_SPEED * 3;
-            if (IsKeyReleased(KEY_LEFT_SHIFT)) speed_ = DEFAULT_SPEED;
             if (IsKeyPressed(KEY_BACKSPACE)) level_->clear();
 
             // change figure input
@@ -192,23 +190,23 @@ private:
 
         switch (random)
         {
-        case 1: return Figures::o; break;
-        case 2: return Figures::i; break;
-        case 3: return Figures::s; break;
-        case 4: return Figures::z; break;
-        case 5: return Figures::l; break;
-        case 6: return Figures::j; break;
-        case 7: return Figures::t; break;
+        case 1: return Figures::o;
+        case 2: return Figures::i;
+        case 3: return Figures::s;
+        case 4: return Figures::z;
+        case 5: return Figures::l;
+        case 6: return Figures::j;
+        case 7: return Figures::t;
         default: return Figures::o;
         }
     }
 
-    const float DEFAULT_SPEED = 1.0f;
-    const float SPRINT_SPEED = 8.0f;
+    float defaultSpeed_ = 1.0f;
+    const float sprintSpeed_ = 50.0f;
 
     int x_ = 0;
     float y_ = 0.0f;
-    float speed_ = DEFAULT_SPEED;
+    float speed_ = defaultSpeed_;
     Level* level_;
     Figure player_;
     Figure nextFigure_;
