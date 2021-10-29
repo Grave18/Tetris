@@ -43,10 +43,10 @@ int main()
     MenuSystem menu(windowWidth, windowHeight);
 
     Level level;
-    Player player(&level);
     Score score;
+    Player player(&level, &score);
 
-    GameScreens currentScreen = GameScreens::INTRO;
+    GameScreens currentScreen = GameScreens::GAMEPLAY;
 
     // add events
     player.fellEvent().addObserver(&level);
@@ -170,7 +170,10 @@ int main()
                 player.updateGraphics(graphics);
                 score.updateGraphics(graphics);
                 if (player.isInGodMode())
+                {
                     DrawFPS(10, 10);
+                    DrawText(std::to_string(player.getSpeed()).c_str(), 10, 30, 20, BLACK);
+                }
                 break;
             }
             case GameScreens::GAMEOVER:
