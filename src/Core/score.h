@@ -20,17 +20,21 @@ public:
 	{
 		if (event == Events::PLAYER_FELL)
 		{
-			score_ += FIGURE_REWARD;
+			score_ += figureReward_;
 		}
 		else if (event == Events::ROW_CLEARED)
 		{
-			score_ += ROW_REWARD;
+			score_ += rowReward_;
 		}
 	}
+
+	int getScore() const { return score_; }
 
 private:
 	int score_ = 0;
 
-	const static int FIGURE_REWARD = 15;
-	const static int ROW_REWARD = 100;
+	const int figureReward_ = 15;
+	const int rowReward_ = 100;
+
+	Subject observers_;
 };
