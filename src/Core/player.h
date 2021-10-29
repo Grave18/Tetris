@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <string_view>
 #include "level.h"
+#include "score.h"
 #include "tile.h"
 #include "figures.h"
 #include "soundSystem.h"
@@ -14,8 +15,8 @@ class Player
     using Figure = std::array<Tile, 4>;
 
 public:
-    explicit Player(Level* level)
-        : level_(level)
+    explicit Player(Level* level, Score* score)
+        : level_(level), score_(score)
     {
         reset();
     }
@@ -26,6 +27,7 @@ public:
         player_ = nextFigureRandom();
         nextFigure_ = nextFigureRandom();
         placePlayerToStartPosition();
+        currentSpeed_ = defaultSpeed_;
     }
 
     // Input
@@ -35,7 +37,7 @@ public:
         if (IsKeyPressed(KEY_A))  tryToMove("left");
         if (IsKeyPressed(KEY_D))  tryToMove("right");
         if (IsKeyDown(KEY_S))     speed_ = sprintSpeed_;
-        if (IsKeyUp(KEY_S))       speed_ = defaultSpeed_;
+        if (IsKeyUp(KEY_S))       speed_ = currentSpeed_;
         if (IsKeyPressed(KEY_W))  tryToRotate();
 
 
@@ -64,6 +66,8 @@ public:
     void updateMovement(const float dt)
     {
         float tmpY = y_;
+        // increase current speed by the score quantity
+        currentSpeed_ = defaultSpeed_ + static_cast<float>(score_->getScore()) * scoreSpeedMult_;
 
         // falling on ground
         if (dt < 1.0f) 
@@ -108,11 +112,13 @@ public:
     bool isGameOver() const { return gameOther_;  }
     int getX() const { return x_; }
     int getY() const { return static_cast<int>(y_); }
+    float getSpeed() const { return speed_; }
 
     Figure getTiles() const { return player_; }
     Subject& fellEvent() { return observers_; }
 
 private:
+    [[nodiscard]]
     bool detectGameover()
     {
         bool isNotCollideWithWorld = std::all_of(player_.begin(), player_.end(),
@@ -201,13 +207,16 @@ private:
         }
     }
 
-    float defaultSpeed_ = 1.0f;
+    const float defaultSpeed_ = 1.0f;
     const float sprintSpeed_ = 50.0f;
+    const float scoreSpeedMult_ = 0.0005f;
 
     int x_ = 0;
     float y_ = 0.0f;
-    float speed_ = defaultSpeed_;
+    float currentSpeed_ = defaultSpeed_;
+    float speed_ = currentSpeed_;
     Level* level_;
+    Score* score_;
     Figure player_;
     Figure nextFigure_;
     Subject observers_;
