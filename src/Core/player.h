@@ -185,8 +185,8 @@ private:
 
     void placePlayerToStartPosition()
     {
-        x_ = 4;
-        y_ = 1.0f;
+        x_ = defaultPosX;
+        y_ = defaultPosY;
     }
     
     [[nodiscard]]
@@ -210,7 +210,9 @@ private:
     const float defaultSpeed_ = 1.0f;
     const float sprintSpeed_ = 50.0f;
     const float scoreSpeedMult_ = 0.0005f;
-
+    const int defaultPosX = 4;
+    const float defaultPosY = 1.0f;
+ 
     int x_ = 0;
     float y_ = 0.0f;
     float currentSpeed_ = defaultSpeed_;
