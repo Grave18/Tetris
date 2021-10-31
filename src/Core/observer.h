@@ -22,15 +22,23 @@ class Subject
 public:
 	void addObserver(Observer* observer)
 	{
-		if (std::find(observers_.begin(), observers_.end(), observer) == observers_.end())
+		if (observer && std::find(observers_.begin(), observers_.end(), observer) == observers_.end())
 			observers_.push_back(observer);
 		else
-			TraceLog(LOG_WARNING, "Event allready registred.");
+			TraceLog(LOG_WARNING, "Event allready registred or null.");
 	}
 
 	void removeObserver(Observer* observer)
 	{
-		observers_.erase(std::find(observers_.begin(), observers_.end(), observer));
+		if (observer)
+		{
+			auto observerToErase = std::find(observers_.begin(), observers_.end(), observer);
+
+			if(observerToErase != observers_.end())
+				observers_.erase(observerToErase);
+		}
+		else
+			TraceLog(LOG_WARNING, "Observer is null.");
 	}
 
 	void notify(void* entity, Events event) const
