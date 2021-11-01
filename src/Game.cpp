@@ -31,7 +31,7 @@ enum class GameScreens
     INTRO = 0, MENU, OPTIONS, GAMEPLAY, GAMEOVER 
 };
 
-int main()
+void main()
 {
     const char* title = "Tetris";
     constexpr int windowWidth = 800;
@@ -49,14 +49,18 @@ int main()
     GameScreens currentScreen = GameScreens::GAMEPLAY;
 
     // add events
-    player.fellEvent().addObserver(&level);
-    player.fellEvent().addObserver(&sound);
-    player.fellEvent().addObserver(&score);
-    level.clearedRowEvent().addObserver(&sound);
-    level.clearedRowEvent().addObserver(&score);
+    auto& playerFellEvent = player.fellEvent();
+    playerFellEvent.addObserver(&level);
+    playerFellEvent.addObserver(&sound);
+    playerFellEvent.addObserver(&score);
+
+    auto& levelRowClearedEvent = level.rowClearedEvent();
+    levelRowClearedEvent.addObserver(&sound);
+    levelRowClearedEvent.addObserver(&score);
 
     float timeToMenuScreen = 0.0f;
     SetMousePosition(0, 0);
+
     while (!WindowShouldClose())
     {
         float dt = GetFrameTime();
