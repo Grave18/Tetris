@@ -1,7 +1,7 @@
+#include <cassert>
+
 #include "level.h"
 #include "player.h"
-#include <cassert>
-//#include "observer.h"
 
 // public:
 void Level::updateGraphics(const GraphicsSystem& graphics) const
@@ -31,11 +31,11 @@ void Level::clear()
     TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
 }
 
-void Level::onNotify(void* entity, Events event)
+void Level::onNotify(const std::any& entity, Events event)
 {
-    if (entity && event == Events::PLAYER_FELL)
+    if (entity.type() == typeid(Player*) && event == Events::PLAYER_FELL)
     {
-        auto player = static_cast<Player*>(entity);
+        auto player = std::any_cast<Player*>(entity);
 
         for (const auto& tile : player->getTiles())
         {

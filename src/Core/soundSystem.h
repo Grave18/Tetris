@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <raylib.h>
+#include <any>
 
 #include "observer.h"
 
@@ -24,7 +25,7 @@ public:
         CloseAudioDevice();
     }
  
-    void onNotify(void* entity, Events event) override
+    void onNotify(const std::any& entity, Events event) override
     {
         if (event == Events::ROW_CLEARED)
             playSoundClearRow();

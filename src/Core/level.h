@@ -3,6 +3,7 @@
 #include <array>
 #include <algorithm>
 #include <string>
+#include <any>
 
 #include "tile.h"
 #include "graphicsSystem.h"
@@ -16,7 +17,7 @@ public:
     bool willNotCollideWith(int x, int y) const;
     void clear();
 
-    void onNotify(void* entity, Events event) override;
+    void onNotify(const std::any& entity, Events event) override;
     Subject& rowClearedEvent() { return observers_; }
 
 private:

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <any>
+
 #include "observer.h"
 #include "graphicsSystem.h"
 
@@ -16,7 +18,7 @@ public:
 		graphics.drawScore(score_);
 	}
 
-	void onNotify(void* entity, Events event) override
+	void onNotify(const std::any& entity, Events event) override
 	{
 		if (event == Events::PLAYER_FELL)
 		{

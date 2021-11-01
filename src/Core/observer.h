@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <vector>
 #include <algorithm>
+#include <any>
 
 enum class Events
 {
@@ -13,7 +14,7 @@ enum class Events
 class Observer
 {
 public:
-	virtual void onNotify(void* entity, Events event) = 0;
+	virtual void onNotify(const std::any& entity, Events event) = 0;
 	virtual ~Observer() = default;
 };
 
@@ -41,7 +42,7 @@ public:
 			TraceLog(LOG_WARNING, "Observer is null.");
 	}
 
-	void notify(void* entity, Events event) const
+	void notify(const std::any& entity, Events event) const
 	{
 		for (const auto& observer : observers_)
 		{
