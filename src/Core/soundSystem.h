@@ -32,8 +32,8 @@ public:
             playSoundPlayerFell();
     }
 
-    void playSoundPlayerFell() const { PlaySoundMulti(sounds_[0]); }
-    void playSoundClearRow() const { PlaySoundMulti(sounds_[1]); }
+    void playSoundPlayerFell() const { PlaySound(sounds_[0]); }
+    void playSoundClearRow() const { PlaySound(sounds_[1]); }
 
     void setSoundVolume(float volume) 
     {
