@@ -57,6 +57,6 @@ private:
     Figure nextFigure_;
     Subject observers_;
 
-    bool godMode_ = true;
+    bool godMode_ = false;
     bool gameOther_ = false;
 };

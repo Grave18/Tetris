@@ -46,7 +46,7 @@ void main()
     Score score;
     Player player(&level, &score);
 
-    GameScreens currentScreen = GameScreens::GAMEPLAY;
+    GameScreens currentScreen = GameScreens::INTRO;
 
     // add events
     auto& playerFellEvent = player.fellEvent();
