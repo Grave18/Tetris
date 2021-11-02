@@ -8,23 +8,28 @@
 * Tile - минимальная единица, из чего состоит фигура и уровень
 */
 
+// Standard library
 #include <string>
 #include <vector>
-#include <raylib.h>
-
-//#define RAYGUI_IMPLEMENTATION
-//#include <shapes/raygui.h>
-
 #ifdef _DEBUG
 #include <iostream>
 #endif
 
+// RayLib
+#include <raylib.h>
+//#define RAYGUI_IMPLEMENTATION
+//#include <shapes/raygui.h>
+
+// Core
 #include "graphicsSystem.h"
 #include "soundSystem.h"
 #include "menuSystem.h"
 #include "player.h"
 #include "level.h"
 #include "score.h"
+
+// Interface
+#include "Interface/window.h"
 
 enum class GameScreens
 {
@@ -33,6 +38,8 @@ enum class GameScreens
 
 void main()
 {
+    using namespace Interface;
+
     const char* title = "Tetris";
     constexpr int windowWidth = 800;
     constexpr int windowHeight = 600;
@@ -45,6 +52,14 @@ void main()
     Level level;
     Score score;
     Player player(&level, &score);
+
+    Window mainWindow(windowWidth,
+                      windowHeight,
+                      GetMousePosition,
+                      IsMouseButtonPressed);
+
+    Vector2 mousePos = GetMousePosition();
+    bool isLeftMouseButtonPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 
     GameScreens currentScreen = GameScreens::GAMEPLAY;
 
@@ -61,11 +76,12 @@ void main()
     float timeToMenuScreen = 0.0f;
     SetMousePosition(0, 0);
 
+
     while (!WindowShouldClose())
     {
         float dt = GetFrameTime();
-        Vector2 mousePos = GetMousePosition();
-        bool isLeftMouseButtonPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
+        mousePos = GetMousePosition();
+        isLeftMouseButtonPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 
         BeginDrawing();
             ClearBackground(RAYWHITE);
