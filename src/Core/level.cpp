@@ -55,7 +55,8 @@ void Level::scanRows()
         if (rows_[i] == 10)
         {
             clearRow(i);
-            fireRowClearedEvent()
+            TraceLog(LOG_INFO, "ROW_CLEARED_EVENT");
+            observers_.notify(this, Events::ROW_CLEARED);
         }
         else --i;
     }
@@ -114,10 +115,4 @@ void Level::shiftDownRows(int row)
         TraceLog(LOG_INFO, ("row " + std::to_string(i + 1) + " = "
                             + std::to_string(rows_[i + 1])).c_str());
     }
-}
-
-void Level::fireRowClearedEvent()
-{
-    observers_.notify(this, Events::ROW_CLEARED);
-    TraceLog(LOG_INFO, "ROW_CLEARED_EVENT");
 }
