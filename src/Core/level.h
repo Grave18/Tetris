@@ -13,12 +13,15 @@
 class Level : public Observer
 {
 public:
+    Level() = default;
+
     void updateGraphics(const GraphicsSystem& graphics) const;
-    bool willNotCollideWith(int x, int y) const;
+    [[nodiscard]] bool willNotCollideWith(int x, int y) const;
     void clear();
 
+    // notify all observers of row cleared event
     void onNotify(const std::any& entity, Events event) override;
-    Subject& rowClearedEvent() { return observers_; }
+    [[nodiscard]] Subject& rowClearedEvent() { return observers_; }
 
 private:
     void scanRows();
@@ -26,13 +29,15 @@ private:
     void clearRow(int row);
     void shiftDownRows(int row);
 
+    void fireRowClearedEvent();
+
     // index of neft not occupied tile
     int nextIndex_ = 0;
-    static const int LEVEL_WIDTH = 10;
-    static const int LEVEL_HEIGHT = 20;
-    static const int MAX_SIZE = LEVEL_WIDTH * LEVEL_HEIGHT;
+    static const int sLevelWidth_ = 10;
+    static const int sLevelHeight_ = 20;
+    static const int sMaxSize_ = sLevelWidth_ * sLevelHeight_;
     // object pool
-    std::array<Tile, MAX_SIZE> level_;
+    std::array<Tile, sMaxSize_> level_;
 
     static const int rowsCount_ = 20;
     std::array<int, rowsCount_> rows_ = {0};

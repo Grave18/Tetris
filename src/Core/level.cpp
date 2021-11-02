@@ -13,7 +13,7 @@ void Level::updateGraphics(const GraphicsSystem& graphics) const
 bool Level::willNotCollideWith(int x, int y) const
 {
     // check level bounds
-    if (x < 0 || x >= LEVEL_WIDTH || y >= LEVEL_HEIGHT)
+    if (x < 0 || x >= sLevelWidth_ || y >= sLevelHeight_)
         return false;
 
     // check each tile for collision
@@ -55,8 +55,7 @@ void Level::scanRows()
         if (rows_[i] == 10)
         {
             clearRow(i);
-            TraceLog(LOG_INFO, "ROW_CLEARED_EVENT");
-            observers_.notify(this, Events::ROW_CLEARED);
+            fireRowClearedEvent();
         }
         else --i;
     }
@@ -68,7 +67,7 @@ void Level::addTile(int x, int y, Color color)
     assert(y > -1 && "addTile() y must be grater then 0!");
     assert(y < 20 && "addTile() y must be less then 20!");
 
-    if (nextIndex_ != MAX_SIZE)
+    if (nextIndex_ != sMaxSize_)
     {
         level_[nextIndex_].setTile(x, y, color);
         ++nextIndex_;
@@ -115,4 +114,10 @@ void Level::shiftDownRows(int row)
         TraceLog(LOG_INFO, ("row " + std::to_string(i + 1) + " = "
                             + std::to_string(rows_[i + 1])).c_str());
     }
+}
+
+void Level::fireRowClearedEvent()
+{
+    TraceLog(LOG_INFO, "ROW_CLEARED_EVENT");
+    observers_.notify(this, Events::ROW_CLEARED);
 }
