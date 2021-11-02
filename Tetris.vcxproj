@@ -22,6 +22,7 @@
     <ClCompile Include="src\Core\graphicsSystem.cpp" />
     <ClCompile Include="src\Core\level.cpp" />
     <ClCompile Include="src\Core\figures.cpp" />
+    <ClCompile Include="src\Core\player.cpp" />
     <ClCompile Include="src\Core\score.h" />
     <ClCompile Include="src\game.cpp" />
   </ItemGroup>
@@ -80,6 +81,11 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
       <FileType>Document</FileType>
     </Media>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\raylib.ico" />
+    <Image Include="resources\raylib_logo_512.png" />
+    <Image Include="resources\raylib_logo_animation.gif" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
