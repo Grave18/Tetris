@@ -6,22 +6,15 @@
 class Tile
 {
 public:
-    Tile(int x = 0, int y = 0, Color color = BLACK)
-        : x_(x), y_(y),  color_(color)
-    {}
+    Tile(int x, int y, Color color);
 
+    [[nodiscard]] int getX() const { return x_; }
+    [[nodiscard]] int getY() const { return y_; }
+    [[nodiscard]] Color getColor() const { return color_; }
     void setX(int x) { x_ = x; }
     void setY(int y) { y_ = y; }
-    int getX() const { return x_; }
-    int getY() const { return y_; }
-    Color getColor() const { return color_; }
     void setColor(Color color) { color_ = color; }
-    void setTile(int x, int y, Color color)
-    {
-        x_ = x;
-        y_ = y;
-        color_ = color;
-    }
+    void setTile(int x, int y, Color color);
 
 private:
     int x_;
