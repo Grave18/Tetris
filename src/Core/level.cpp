@@ -4,6 +4,13 @@
 #include "player.h"
 
 // public:
+void Level::clear()
+{
+    nextIndex_ = 0;
+    rows_ = {0};
+    TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
+}
+
 void Level::updateGraphics(const GraphicsSystem& graphics) const
 {
     // draw level tiles
@@ -24,12 +31,6 @@ bool Level::willNotCollideWith(int x, int y) const
         });
 }
 
-void Level::clear()
-{
-    nextIndex_ = 0;
-    rows_ = {0};
-    TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
-}
 
 void Level::onNotify(const std::any& entity, Events event)
 {

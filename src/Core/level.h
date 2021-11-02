@@ -15,9 +15,9 @@ class Level : public Observer
 public:
     Level() = default;
 
+    void clear();
     void updateGraphics(const GraphicsSystem& graphics) const;
     [[nodiscard]] bool willNotCollideWith(int x, int y) const;
-    void clear();
 
     // notify all observers of row cleared event
     void onNotify(const std::any& entity, Events event) override;
