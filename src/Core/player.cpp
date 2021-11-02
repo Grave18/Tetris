@@ -1,147 +1,193 @@
-﻿#include <raylib.h>
-
 #include "player.h"
 
+using Figure = std::array<Tile, 4>;
 
-Player::Player(Level* world)
-	: float_y_{0.0f}, fall_speed_{2.5f}, x{0}, y{0}, world{world}
+Player::Player(Level * level, Score * score)
+    : level_(level), score_(score)
 {
-	change_figure_random();
-	return_figure_to_start_position();
+    reset();
 }
 
-Player::Player(Level* world, Figure::Figures figure)
-	: float_y_{0.0f}, fall_speed_{2.5f}, x{0}, y{0}, world{world}
+void Player::reset()
 {
-	change_figure(figure);
-	return_figure_to_start_position();
+    gameOther_ = false;
+    player_ = nextFigureRandom();
+    nextFigure_ = nextFigureRandom();
+    placePlayerToStartPosition();
+    currentSpeed_ = defaultSpeed_;
 }
 
-// Возвращаем фигуру в начало и меняем на рандомную
-void Player::return_figure_to_start_position()
+// Input
+void Player::updateInput()
 {
-	x = 4;
-	y = 1;
-	float_y_ = 1.0f;
+    // movement input
+    if (IsKeyPressed(KEY_A))  tryToMove("left");
+    if (IsKeyPressed(KEY_D))  tryToMove("right");
+    if (IsKeyDown(KEY_S))     speed_ = sprintSpeed_;
+    if (IsKeyUp(KEY_S))       speed_ = currentSpeed_;
+    if (IsKeyPressed(KEY_W))  tryToRotate();
+
+
+    // GodMode
+    if (IsKeyPressed(KEY_Q)) godMode_ = !godMode_;
+    if (godMode_)
+    {
+        if (IsKeyPressed(KEY_BACKSPACE)) level_->clear();
+
+        // change figure input
+        if (IsKeyPressed(KEY_UP))    --y_;
+        if (IsKeyPressed(KEY_DOWN))  ++y_;
+        if (IsKeyPressed(KEY_LEFT))  --x_;
+        if (IsKeyPressed(KEY_RIGHT)) ++x_;
+
+        if (IsKeyPressed(KEY_O)) player_ = Figures::o;
+        if (IsKeyPressed(KEY_I)) player_ = Figures::i;
+        if (IsKeyPressed(KEY_X)) player_ = Figures::s;
+        if (IsKeyPressed(KEY_Z)) player_ = Figures::z;
+        if (IsKeyPressed(KEY_L)) player_ = Figures::l;
+        if (IsKeyPressed(KEY_J)) player_ = Figures::j;
+        if (IsKeyPressed(KEY_T)) player_ = Figures::t;
+    }
 }
 
-Subject& Player::fell_event()
+void Player::updateMovement(const float dt)
 {
-	return subject_;
+    float tmpY = y_;
+    // increase current speed by the score quantity
+    currentSpeed_ = defaultSpeed_ + static_cast<float>(score_->getScore()) * scoreSpeedMult_;
+
+    // falling on ground
+    if (dt < 1.0f)
+        tmpY += speed_ * dt;
+    else
+        tmpY += 1.0f;
+
+    bool isNotCollideWithWorld = std::all_of(player_.begin(), player_.end(),
+                                             [this, tmpY](const auto& tile)
+    {
+        return level_->willNotCollideWith(x_ + tile.getX(),
+                                          static_cast<int>(tmpY) + tile.getY());
+    });
+
+    // check collision with world
+    if (isNotCollideWithWorld)
+        y_ = tmpY;
+    else
+    {
+        if (detectGameover())
+            return;
+
+        firePlayerFellEvent();
+        player_ = nextFigure_;
+        nextFigure_ = nextFigureRandom();
+        placePlayerToStartPosition();
+    }
 }
 
-void Player::change_figure(const Figure::Figures figures)
+void Player::updateGraphics(const GraphicsSystem& graphics) const
 {
-	if (figures == Figure::Figures::O)
-		figure = Figure::o;
-	else if (figures == Figure::Figures::I)
-		figure = Figure::i;
-	else if (figures == Figure::Figures::S)
-		figure = Figure::s;
-	else if (figures == Figure::Figures::Z)
-		figure = Figure::z;
-	else if (figures == Figure::Figures::L)
-		figure = Figure::l;
-	else if (figures == Figure::Figures::J)
-		figure = Figure::j;
-	else if (figures == Figure::Figures::T)
-		figure = Figure::t;
+    // draw player
+    graphics.drawPlayer(player_, x_, static_cast<int>(y_));
+
+    // draw nextFigure
+    graphics.drawNextFigure(nextFigure_);
+
+    // TODO: draw stash
 }
 
-void Player::change_figure_random()
-{
-	change_figure( 
-		static_cast<Figure::Figures>(
-			GetRandomValue(
-	0, static_cast<int>(Figure::Figures::MAX_ELEMENT) - 1)));
-}
+    bool Player::detectGameover()
+    {
+        bool isNotCollideWithWorld = std::all_of(player_.begin(), player_.end(),
+                                                 [this](const auto& tile)
+        {
+            return level_->willNotCollideWith(x_ + tile.getX(),
+                                              static_cast<int>(y_) + tile.getY());
+        });
 
-// Двигает игрока, возвращает false если двигаться мешает препятствие
-bool Player::move_left()
-{
-	for (int i = 0; i < figure.size; ++i)
-	{
-		// Координаты квадратов фигуры, переведенные в мировые
-		const int world_x = x + figure[i].x;
-		const int world_y = y + figure[i].y;
+        if (!isNotCollideWithWorld)
+        {
+            gameOther_ = true;
+            return true;
+        }
 
-		if ((world_x - 1) < 0 || world->is_element_occupied(world_x - 1, world_y))
-		{
-			return false;
-		}
-	}
+        return false;
+    }
 
-	--x; // Двигаем фигуру влево
+    Figure& Player::nextFigureRandom()
+    {
+        int random = GetRandomValue(1, 7);
 
-	return true;
-}
+        switch (random)
+        {
+        case 1: return Figures::o;
+        case 2: return Figures::i;
+        case 3: return Figures::s;
+        case 4: return Figures::z;
+        case 5: return Figures::l;
+        case 6: return Figures::j;
+        case 7: return Figures::t;
+        default: return Figures::o;
+        }
+    }
 
-bool Player::move_right()
-{
-	// Сканируем фигуру сверху вниз, слева направо
-	for (int i = 0; i < figure.size; ++i)
-	{
-		// Координаты квадратов фигуры, переведенные в мировые
-		const int world_x = x + figure[i].x;
-		const int world_y = y + figure[i].y;
+    bool Player::tryToMove(const std::string_view& side)
+    {
+        int tmpX = 0;
+        if (side == "left")  tmpX = x_ - 1;
+        if (side == "right") tmpX = x_ + 1;
 
-		if ((world_x + 1) >= world->size_x || world->is_element_occupied(world_x + 1, world_y))
-		{
-			return false;
-		}
-	}
+        // check collision
+        if (std::all_of(player_.begin(), player_.end(),
+        [this, tmpX](const auto& tile)
+        {
+            return level_->willNotCollideWith(tmpX + tile.getX(),
+                                              static_cast<int>(y_) + tile.getY());
+        }))
+        {
+            x_ = tmpX;
+            return true;
+        }
 
-	++x; // Двигаем фигуру вправо
+        return false;
+    }
 
-	return true;
-}
+    // Try to rotate player if player will not collide with level
+    bool Player::tryToRotate()
+    {
+        // rotate if new position of player didn't collide with level
+        if (std::all_of(player_.begin(), player_.end(),
+                        [this](const auto& tile)
+        {
+            const int tileX = tile.getY();
+            const int tileY = -tile.getX();
+            return level_->willNotCollideWith(x_ + tileX,
+                                              static_cast<int>(y_) + tileY);
+        }))
+        {
+            for (auto& tile : player_)
+            {
+                const int x = tile.getY();
+                const int y = -tile.getX();
+                tile.setX(x);
+                tile.setY(y);
+            }
 
-void Player::fall(float dt)
-{
-	for (int i = 0; i < figure.size; ++i)
-	{
-		// Координаты квадратов фигуры, переведенные в мировые
-		const int world_x = x + figure[i].x;
-		const int world_y = y + figure[i].y;
+            return true;
+        }
 
-		if ((world_y + 1) >= world->size_y || world->is_element_occupied(world_x, world_y + 1))
-		{
-			subject_.notify(this, Events::PLAYER_FELL_EVENT);
-			change_figure_random();
-			return_figure_to_start_position();
+        return false;
+    }
 
-			return;
-		}
-	}
-	// Обеспечиваем плавное движение
-	float_y_ += fall_speed_ * 1 / 60;
-	y = static_cast<int>(float_y_);
-}
 
-void Player::speed_up()
-{
-	fall_speed_ = 10.0f;
-}
+    void Player::placePlayerToStartPosition()
+    {
+        x_ = defaultPosX_;
+        y_ = defaultPosY_;
+    }
 
-void Player::speed_down()
-{
-	fall_speed_ = 2.5f;
-}
 
-void Player::rotate_figure()
-{
-	if (figure.figure_type != Figure::Figures::O && (x - 1) > -1 && (x + 1) < world->size_x)
-	{
-		for (int i = 0; i < figure.size; ++i)
-		{
-			// Поворот левосторонней системы против часовой
-			// x' =  x * cos(90) + y * sin(90)  // sin(90) = 1, cos(90) = 0;
-			// y' = -x * sin(90) + y * cos(90)
-			const int local_x = figure[i].y;
-			const int local_y = -figure[i].x;
-
-			figure[i].x = local_x;
-			figure[i].y = local_y;
-		}
-	}
-}
+    void Player::firePlayerFellEvent()
+    {
+        observers_.notify(this, Events::PLAYER_FELL);
+        TraceLog(LOG_INFO, "PLAYER_FELL");
+    }

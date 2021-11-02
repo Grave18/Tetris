@@ -1,32 +1,46 @@
 #pragma once
 
 #include <array>
+#include <algorithm>
+#include <string>
+#include <any>
 
-#include "rectangle.h"
-#include "figure.h"
+#include "tile.h"
+#include "graphicsSystem.h"
 #include "observer.h"
 
-// Представляет собой игровой мир
+// Game level
 class Level : public Observer
 {
 public:
-	int size_x;
-	int size_y;
+    Level() = default;
+
+    void clear();
+    void updateGraphics(const GraphicsSystem& graphics) const;
+    [[nodiscard]] bool willNotCollideWith(int x, int y) const;
+
+    // notify all observers of row cleared event
+    void onNotify(const std::any& entity, Events event) override;
+    [[nodiscard]] Subject& rowClearedEvent() { return observers_; }
 
 private:
-	std::array<Rec, 200> arr_;
+    void scanRows();
+    void addTile(int x, int y, Color color);
+    void clearRow(int row);
+    void shiftDownRows(int row);
 
-public:
-	Level(int bound_x, int bound_y);
+    void fireRowClearedEvent();
 
-	void clear();
-	[[nodiscard]] uint64_t get_size() const;
-	Rec& get_element(uint64_t index);
-	bool is_element_occupied(int x, int y);
+    // index of neft not occupied tile
+    int nextIndex_ = 0;
+    static const int sLevelWidth_ = 10;
+    static const int sLevelHeight_ = 20;
+    static const int sMaxSize_ = sLevelWidth_ * sLevelHeight_;
+    // object pool
+    std::array<Tile, sMaxSize_> level_;
 
-private:
-	void set_element_by_position(int world_x, int world_y, Color color);
-	void scan_for_complete_rows_and_call_clear_row();
-	void clear_row(int row);
-	void on_notify(void* entity, Events event) override;
+    static const int rowsCount_ = 20;
+    std::array<int, rowsCount_> rows_ = {0};
+
+    Subject observers_;
 };

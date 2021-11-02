@@ -1,48 +1,55 @@
-﻿#pragma once
+#pragma once
 
-#include <iostream>
+#include <raylib.h>
 #include <vector>
+#include <algorithm>
+#include <any>
 
 enum class Events
 {
-	PLAYER_FELL_EVENT
+	PLAYER_FELL,
+	ROW_CLEARED
 };
 
 class Observer
 {
 public:
+	virtual void onNotify(const std::any& entity, Events event) = 0;
 	virtual ~Observer() = default;
-
-	virtual void on_notify(void* entity, Events event) = 0;
 };
 
 class Subject
 {
-private:
-	std::vector<Observer*> observers_ {};
-
 public:
-	void add_observer(Observer* observer)
+	void addObserver(Observer* observer)
 	{
-		observers_.push_back(observer);
+		if (observer && std::find(observers_.begin(), observers_.end(), observer) == observers_.end())
+			observers_.push_back(observer);
+		else
+			TraceLog(LOG_WARNING, "Event allready registred or null.");
 	}
 
-	void remove_observer(Observer* observer)
+	void removeObserver(Observer* observer)
 	{
-		// Save new end and remove elements from vector
-		const auto new_end = std::remove(
-			observers_.begin(),
-			observers_.end(), 
-			observer);
-		// Finally erase unused tail from vector
-		observers_.erase(new_end, observers_.end());
-	}
-	
-	void notify(void* entity, Events event)
-	{
-		for(const auto& observer: observers_)
+		if (observer)
 		{
-			observer->on_notify(entity, event);
+			auto observerToErase = std::find(observers_.begin(), observers_.end(), observer);
+
+			if(observerToErase != observers_.end())
+				observers_.erase(observerToErase);
+		}
+		else
+			TraceLog(LOG_WARNING, "Observer is null.");
+	}
+
+	void notify(const std::any& entity, Events event) const
+	{
+		for (const auto& observer : observers_)
+		{
+			observer->onNotify(entity, event);
 		}
 	}
+
+private:
+	std::vector<Observer*> observers_;
 };

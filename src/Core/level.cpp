@@ -1,119 +1,124 @@
-﻿#include "level.h"
 #include <cassert>
 
+#include "level.h"
 #include "player.h"
 
-
-Level::Level(int bound_x, int bound_y)
-	: size_x{ bound_x }, size_y{ bound_y }, arr_{ }
-{ 
-}
-
-// Очищает мир
+// public:
 void Level::clear()
 {
-	for (auto& element : arr_)
-	{
-		if (element.is_occupied)
-			element.clear();
-	}
+    nextIndex_ = 0;
+    rows_ = {0};
+    TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
 }
 
-// Возвращает размер массива мира
-uint64_t Level::get_size() const
+void Level::updateGraphics(const GraphicsSystem& graphics) const
 {
-	return arr_.size();
+    // draw level tiles
+    graphics.drawLevel(level_, nextIndex_);
 }
 
-// Пока не используется
-Rec& Level::get_element(uint64_t index)
+bool Level::willNotCollideWith(int x, int y) const
 {
-	if (index < arr_.size())
-		return arr_[index];
-	else
-		throw("Element at this number doesn't exist");
+    // check level bounds
+    if (x < 0 || x >= sLevelWidth_ || y >= sLevelHeight_)
+        return false;
+
+    // check each tile for collision
+    return std::none_of(level_.begin(), level_.begin() + nextIndex_,
+        [x, y](const auto& tile)
+        {
+            return x == tile.getX() && y == tile.getY();
+        });
 }
 
-// Обращение как к двумерному массиву
-bool Level::is_element_occupied(int x, int y)
+
+void Level::onNotify(const std::any& entity, Events event)
 {
-	if ((x >= 0 && x <= size_x) && (y >= 0 && y <= size_y))
-		return arr_[x + y * size_x].is_occupied;
-	else
-		return false;
+    if (entity.type() == typeid(Player*) && event == Events::PLAYER_FELL)
+    {
+        auto player = std::any_cast<Player*>(entity);
+
+        for (const auto& tile : player->getTiles())
+        {
+            addTile(tile.getX() + player->getX(), tile.getY() + player->getY(), tile.getColor());
+        }
+
+        scanRows();
+    }
 }
 
-//private:
-
-// Загружает элемент в массив карты
-void Level::set_element_by_position(int world_x, int world_y, Color color)
+// private:
+void Level::scanRows()
 {
-	assert(world_x >= 0 && world_x < size_x);
-	assert(world_y >= 0 && world_y < size_y);
-
-	const int index = world_x + world_y * size_x;
-
-	arr_[index].is_occupied = true;
-	arr_[index].color = color;
+    int i = rowsCount_ - 1;
+    while (i >= 0)
+    {
+        if (rows_[i] == 10)
+        {
+            clearRow(i);
+            fireRowClearedEvent();
+        }
+        else --i;
+    }
 }
 
-void Level::scan_for_complete_rows_and_call_clear_row()
+void Level::addTile(int x, int y, Color color)
 {
-	for (int y = 0; y < size_y ; ++y)
-	{
-		int num_of_occupied = 0;
+    //if (y < 0) y = 0;
+    assert(y > -1 && "addTile() y must be grater then 0!");
+    assert(y < 20 && "addTile() y must be less then 20!");
 
-		for (int x = 0; x < size_x; ++x)
-		{
-			if (arr_[x + y * size_x].is_occupied)
-				++num_of_occupied;
-		}
+    if (nextIndex_ != sMaxSize_)
+    {
+        level_[nextIndex_].setTile(x, y, color);
+        ++nextIndex_;
+        ++rows_[y];
 
-		if (num_of_occupied == size_x)
-			clear_row(y);
-	}
+        TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
+        TraceLog(LOG_INFO, ("row " + std::to_string(y) + " = "
+                            + std::to_string(rows_[y])).c_str());
+    }
 }
 
-// Заполняет ряд элементами, располагающимися выше по y на 1
-void Level::clear_row(const int row)
+void Level::clearRow(int row)
 {
-	assert(row >= 0 && row < size_y && " row out of bounds");
+    int  currentIndex = 0;
+    while (currentIndex < nextIndex_)
+    {
+        // check if tile in the row and if true then throw away in the back
+        // of active part of array and decrement next index else procced with new index
+        if (level_[currentIndex].getY() == row)
+        {
+            --nextIndex_;
+            std::swap(level_[currentIndex], level_[nextIndex_]);
+            TraceLog(LOG_INFO, ("nextIndex = " + std::to_string(nextIndex_)).c_str());
+        }
+        else ++currentIndex;
+    }
 
-	if (row == 0)
-	{
-		for (int x = 0; x < size_x; ++x)
-		{
-			// так как row = 0 индексом является просто x
-			arr_[x].is_occupied = false;
-		}
-	}
-	else
-	{
-		for (int x = 0; x < size_x; ++x)
-		{
-			// Копируем параметры верхнего элемента
-			arr_[x + row * size_x].is_occupied = arr_[x + (row - 1) * size_x].is_occupied;
-			arr_[x + row * size_x].color = arr_[x + (row - 1) * size_x].color;
-		}
-
-		clear_row(row - 1);
-	}
+    shiftDownRows(row - 1);
 }
 
-void Level::on_notify(void* entity, Events event)
+void Level::shiftDownRows(int row)
 {
-	if(event == Events::PLAYER_FELL_EVENT)
-	{
-		const auto player = static_cast<Player*>(entity);
-		for(int i = 0; i < player->figure.size; ++i)
-		{
-			set_element_by_position(
-				player->figure[i].x + player->x,
-				player->figure[i].y + player->y,
-				player->figure[i].color);
-		}
-		
-		scan_for_complete_rows_and_call_clear_row();
-	}
+    for (int i = 0; i < nextIndex_; ++i)
+        if (level_[i].getY() <= row)
+        {
+            level_[i].setY(level_[i].getY() + 1);
+        }
+
+    // refresh number of tiles in rows
+    rows_[0] = 0;
+    for (int i = row; i >= 0; --i)
+    {
+        rows_[i + 1] = rows_[i];
+        TraceLog(LOG_INFO, ("row " + std::to_string(i + 1) + " = "
+                            + std::to_string(rows_[i + 1])).c_str());
+    }
 }
 
+void Level::fireRowClearedEvent()
+{
+    TraceLog(LOG_INFO, "ROW_CLEARED_EVENT");
+    observers_.notify(this, Events::ROW_CLEARED);
+}

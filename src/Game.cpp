@@ -1,146 +1,204 @@
 /*
 * This game is classic tetris, with figures with 4 components
 * Coded with use of RayLib 3.7
-* Rec - minimal component of figure and level
-* Figure - controlled by player
+* Tile - minimal component of figure and level
 *
 * Эта игра классический тетрис, где фигура состоит из 4ч компонентов
 * написана с помощью RayLib 3.7
-* Rec(значит rectangle) - минимальная единица, из чего состоит фигура и уровень
-* Figure(фигура) - то, чем управляет игрок
+* Tile - минимальная единица, из чего состоит фигура и уровень
 */
 
-#include "game.h"
+#include <string>
+#include <vector>
+#include <raylib.h>
 
-constexpr int level_width = 10;
-constexpr int level_height = 20;
-constexpr int sector_size = 50;
-constexpr int scr_width = (level_width * sector_size) + 10 * sector_size;
-constexpr int scr_height = level_height * sector_size;
-const char* title = "Tetris";
+//#define RAYGUI_IMPLEMENTATION
+//#include <shapes/raygui.h>
 
-static bool is_debugging = true;
+#ifdef _DEBUG
+#include <iostream>
+#endif
 
-int main()
+#include "graphicsSystem.h"
+#include "soundSystem.h"
+#include "menuSystem.h"
+#include "player.h"
+#include "level.h"
+#include "score.h"
+
+enum class GameScreens
 {
-	InitWindow(scr_width, scr_height, title);
-	SetTargetFPS(60);
+    INTRO = 0, MENU, OPTIONS, GAMEPLAY, GAMEOVER 
+};
 
-	Level level(level_width, level_height);
-	Player player(&level);
-	// Add observer for player reaches ground event
-	player.fell_event().add_observer(&level);
+void main()
+{
+    const char* title = "Tetris";
+    constexpr int windowWidth = 800;
+    constexpr int windowHeight = 600;
+    constexpr int fps = 60;
 
-	InputHandler input_handler;
-	Command* command = nullptr;
+    GraphicsSystem graphics(title, windowWidth, windowHeight, fps);
+    SoundSystem sound;
+    MenuSystem menu(windowWidth, windowHeight);
 
-	while (!WindowShouldClose())
-	{
-		// For using ""s
-		using namespace std::string_literals;
+    Level level;
+    Score score;
+    Player player(&level, &score);
 
-		// DeltaTime
-		const float dt = GetFrameTime();
+    GameScreens currentScreen = GameScreens::GAMEPLAY;
 
-		// Input managed by Command
-		command = input_handler.HandleInput();
-		if (command)
-			command->Execute(player);
+    // add events
+    auto& playerFellEvent = player.fellEvent();
+    playerFellEvent.addObserver(&level);
+    playerFellEvent.addObserver(&sound);
+    playerFellEvent.addObserver(&score);
 
-		player.fall(dt);
+    auto& levelRowClearedEvent = level.rowClearedEvent();
+    levelRowClearedEvent.addObserver(&sound);
+    levelRowClearedEvent.addObserver(&score);
 
-		if (IsKeyDown(KEY_DOWN))
-			player.speed_up();
-		if (IsKeyUp(KEY_DOWN))
-			player.speed_down();
+    float timeToMenuScreen = 0.0f;
+    SetMousePosition(0, 0);
 
-		// Debug control
-		if (IsKeyPressed(KEY_D))
-			is_debugging = !is_debugging;
+    while (!WindowShouldClose())
+    {
+        float dt = GetFrameTime();
+        Vector2 mousePos = GetMousePosition();
+        bool isLeftMouseButtonPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
 
-		if (is_debugging)
-		{
-			if (IsKeyPressed(KEY_O))
-				player.change_figure(Figure::Figures::O);
-			else if (IsKeyPressed(KEY_I))
-				player.change_figure(Figure::Figures::I);
-			else if (IsKeyPressed(KEY_S))
-				player.change_figure(Figure::Figures::S);
-			else if (IsKeyPressed(KEY_Z))
-				player.change_figure(Figure::Figures::Z);
-			else if (IsKeyPressed(KEY_L))
-				player.change_figure(Figure::Figures::L);
-			else if (IsKeyPressed(KEY_J))
-				player.change_figure(Figure::Figures::J);
-			else if (IsKeyPressed(KEY_T))
-				player.change_figure(Figure::Figures::T);
+        BeginDrawing();
+            ClearBackground(RAYWHITE);
 
-			if (IsKeyPressed(KEY_BACKSPACE))
-				level.clear();
-		}
+            // Interface state machine
+            switch (currentScreen)
+            {
+            case GameScreens::INTRO:
+            {
+                timeToMenuScreen += dt;
+                if (timeToMenuScreen > 3.0f)
+                {
+                    currentScreen = GameScreens::MENU;
+                    timeToMenuScreen = 0.0f;
+                }
+                graphics.drawLogo();
+                break;
+            }
+            case GameScreens::MENU:
+            {
+                // menu text
+                menu.text("Menu", 0.1f, 0.5f, 0.1f);
 
-		BeginDrawing();
+                // play button
+                bool isPressed =
+                    menu.button("Play", 0.05f, 0.5f, 0.3f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                    currentScreen = GameScreens::GAMEPLAY;
 
-		ClearBackground(RAYWHITE);
+                // options button
+                isPressed = 
+                    menu.button("Options", 0.05f, 0.5f, 0.4f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                    currentScreen = GameScreens::OPTIONS;
+                
+                break;
+            }
 
-		// HUD
-		Rectangle rec_struct{0, 0, level_width * sector_size, level_height * sector_size};
-		// Level frame
-		DrawRectangleLinesEx(rec_struct, 5, RED);
+            case GameScreens::OPTIONS:
+            {
+                // sound volume bar
+                menu.text("Volume:", 0.05f, 0.15f, 0.1f);
+                float soundVolume =
+                    menu.scrollBar(0.45f, 0.1f, 0.3f, 0.06f, mousePos, isLeftMouseButtonPressed, 0.5f);
+                sound.setSoundVolume(soundVolume);
+                //DrawText(std::to_string(soundVolume).c_str(), 20, 20, 20, BLACK);
 
-		// Score frame
-		rec_struct = {level_width * sector_size + 10, 100, 300, 100};
-		DrawRectangleLinesEx(rec_struct, 5, RED);
+                // back button
+                bool isPressed = 
+                    menu.button("Back", 0.05f, 0.15f, 0.2f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                    currentScreen = GameScreens::MENU;
+                
+                // resolution buttons
+                menu.text("Resolution:", 0.05f, 0.20f, 0.3f);
 
-		DrawText("SCORE:", level_width * sector_size + 10, 0, 40, BLACK);
-		DrawText("0", level_width * sector_size + 20, 125, 50, BLACK);
+                isPressed = menu.button("480p", 0.05f, 0.15f, 0.4f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                {
+                    //TODO: fix this kostyl
+                    isLeftMouseButtonPressed = false;
+                    int newWidth = 640;
+                    int newHeight = 480;
+                    graphics.resize(newWidth, newHeight);
+                    menu.resize(newWidth, newHeight);
+                }
+                isPressed = menu.button("600p", 0.05f, 0.15f, 0.5f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                {
+                    //TODO: fix this kostyl
+                    isLeftMouseButtonPressed = false;
+                    int newWidth = 800;
+                    int newHeight = 600;
+                    graphics.resize(newWidth, newHeight);
+                    menu.resize(newWidth, newHeight);
+                }
+                isPressed = menu.button("1080p", 0.05f, 0.15f, 0.6f, mousePos, isLeftMouseButtonPressed);
+                if (isPressed)
+                {
+                    int newWidth = 1920;
+                    int newHeight = 1080;
+                    graphics.resize(newWidth, newHeight);
+                    menu.resize(newWidth, newHeight);
+                }
 
-		// Next figure frame
+                break;
+            }
 
+            case GameScreens::GAMEPLAY:
+            {
+                // logic
+                if (player.isGameOver())
+                {
+                    // reset level
+                    score.clear();
+                    level.clear();
+                    player.reset();
+                    currentScreen = GameScreens::GAMEOVER;
+                }
+                player.updateInput();
+                player.updateMovement(dt);
 
-		// Rendering of figure
-		rec_struct.width = sector_size;
-		rec_struct.height = sector_size;
+                // darawing
+                graphics.drawBackground();
+                level.updateGraphics(graphics);
+                player.updateGraphics(graphics);
+                score.updateGraphics(graphics);
+                if (player.isInGodMode())
+                {
+                    DrawFPS(10, 10);
+                    DrawText(std::to_string(player.getSpeed()).c_str(), 10, 30, 20, BLACK);
+                }
+                break;
+            }
+            case GameScreens::GAMEOVER:
+            {
+                // logic
+                timeToMenuScreen += dt;
+                if (timeToMenuScreen > 3.0f)
+                {
+                    currentScreen = GameScreens::MENU;
+                    timeToMenuScreen = 0.0f;
+                }
 
-		for (uint64_t i = 0; i < player.figure.size; ++i)
-		{
-			const int tmp_pos_x = player.x + player.figure[i].x;
-			const int tmp_pos_y = player.y + player.figure[i].y;
+                // drawing
+                menu.text("GameOver", 0.1f, 0.5f, 0.5f);
 
-			rec_struct.x = tmp_pos_x * sector_size;
-			rec_struct.y = tmp_pos_y * sector_size;
+                break;
+            }
+            default:
+                TraceLog(LOG_WARNING, "SCREEN_IS_NOT_DEFINED.");
+            }
 
-			DrawRectangleRounded(rec_struct, 0.5f, 1, player.figure[i].color);
-			DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, player.figure[i].outline_color);
-		}
-
-		// Rendering of level
-		for (int y = 0; y < level.size_y; ++y)
-		{
-			for (int x = 0; x < level.size_x; ++x)
-			{
-				const Rec& element = level.get_element(x + y * level.size_x);
-				if (element.is_occupied)
-				{
-					rec_struct.x = x * sector_size;
-					rec_struct.y = y * sector_size;
-
-					DrawRectangleRounded(rec_struct, 0.5f, 1, element.color);
-					DrawRectangleRoundedLines(rec_struct, 0.5f, 1, 3.0f, element.outline_color);
-				}
-			}
-		}
-
-		// Debug
-		if (is_debugging)
-		{
-			std::string debug = "FPS "s + std::to_string(GetFPS()) +
-				"\npos "s + std::to_string(player.x) + ", " + std::to_string(player.y);
-			DrawText(debug.c_str(), 10, 10, 30, DARKBLUE);
-		}
-
-		EndDrawing();
-	}
-
-	CloseWindow();
+        EndDrawing();
+    }
 }
