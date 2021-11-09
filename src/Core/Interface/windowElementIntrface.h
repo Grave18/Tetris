@@ -1,5 +1,8 @@
 #pragma once
 
+#include "elementArgs.h"
+#include "alignment.h"
+
 namespace Interface
 {
 	class WindowElementInterface
@@ -7,7 +10,6 @@ namespace Interface
 	public:
 		virtual ~WindowElementInterface() { }
 
-		//TODO: pass button press and mouse pos
-		virtual void update() = 0;
+		virtual void update(const ElementArgs& args) = 0;
 	};
 }

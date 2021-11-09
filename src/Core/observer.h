@@ -37,6 +37,8 @@ public:
 
 			if(observerToErase != observers_.end())
 				observers_.erase(observerToErase);
+			else
+				TraceLog(LOG_WARNING, "Observer is not found.");
 		}
 		else
 			TraceLog(LOG_WARNING, "Observer is null.");

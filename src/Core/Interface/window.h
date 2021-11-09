@@ -6,25 +6,28 @@
 #include <raylib.h>
 
 #include "Interface/windowElementIntrface.h"
+#include "Interface/elementArgs.h"
 
 namespace Interface
 {
 	class Window
 	{
 	public:
-		Window(int windowWidth,
-			   int windowHeight,
-			   std::function<Vector2(void)> getMousePosition,
-			   std::function<bool(int)> isMouseButtonPressed);
+		Window();
 		Window(Window&) = delete;
 		Window(Window&&) = delete;
 		Window& operator=(Window&) = delete;
 		Window& operator=(Window&&) = delete;
 
+		void addElement(WindowElementInterface* element);
+		void removeElement(WindowElementInterface* element);
+
 		void update();
 
 	private:
-		std::vector<WindowElementInterface*> elements_;
+		void findMultiplier();
 
+		std::vector<WindowElementInterface*> elements_;
+		ElementArgs elemArgs_;
 	};
 }

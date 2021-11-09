@@ -2,8 +2,8 @@
 
 namespace Interface
 {
-	void Button::update()
+	/*void Button::update()
 	{
 
-	}
+	}*/
 }

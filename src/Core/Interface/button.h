@@ -3,7 +3,7 @@
 
 namespace Interface
 {
-	class Button : public WindowElementInterface
+	class Button //: public WindowElementInterface
 	{
 	public:
 		Button() = default;
@@ -12,7 +12,7 @@ namespace Interface
 		Button& operator=(Button&) = delete;
 		Button& operator=(Button&&) = delete;
 
-		void update() override;
+		//void update(float multiplier_) override;
 
 	private:
 

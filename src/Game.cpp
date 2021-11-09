@@ -30,13 +30,48 @@
 
 // Interface
 #include "Interface/window.h"
+#include "Interface/text.h"
 
 enum class GameScreens
 {
     INTRO = 0, MENU, OPTIONS, GAMEPLAY, GAMEOVER 
 };
 
-void main()
+int main()
+{
+    using namespace Interface;
+
+    const char* title = "Tetris";
+    /*constexpr int windowWidth = 2560;
+    constexpr int windowHeight = 1440;*/
+    /*constexpr int windowWidth = 1920;
+    constexpr int windowHeight = 1080;*/
+    constexpr int windowWidth = 1280;
+    constexpr int windowHeight = 720;
+    /*constexpr int windowWidth = 1024;
+    constexpr int windowHeight = 576;*/
+    constexpr int fps = 60;
+    GraphicsSystem graphics(title, windowWidth, windowHeight, fps);
+
+    Window mainWindow;
+    Text text("Obsidian", 0, 0, 40, RED, HA::left, VA::center, HA::center);
+    mainWindow.addElement(&text);
+
+    Window* currentWindow = &mainWindow;
+
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+            ClearBackground(RAYWHITE);
+            currentWindow->update();
+
+        EndDrawing();
+    }
+
+    return 0;
+}
+
+void main2()
 {
     using namespace Interface;
 
@@ -52,11 +87,6 @@ void main()
     Level level;
     Score score;
     Player player(&level, &score);
-
-    Window mainWindow(windowWidth,
-                      windowHeight,
-                      GetMousePosition,
-                      IsMouseButtonPressed);
 
     Vector2 mousePos = GetMousePosition();
     bool isLeftMouseButtonPressed = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);

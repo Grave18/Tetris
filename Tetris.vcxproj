@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\graphicsSystem.cpp" />
+    <ClCompile Include="src\Core\Interface\text.cpp" />
+    <ClCompile Include="src\Core\Interface\window.cpp" />
     <ClCompile Include="src\Core\level.cpp" />
     <ClCompile Include="src\Core\figures.cpp" />
     <ClCompile Include="src\Core\player.cpp" />
@@ -29,6 +31,11 @@
   <ItemGroup>
     <ClInclude Include="src\Core\figures.h" />
     <ClInclude Include="src\Core\graphicsSystem.h" />
+    <ClInclude Include="src\Core\Interface\alignment.h" />
+    <ClInclude Include="src\Core\Interface\elementArgs.h" />
+    <ClInclude Include="src\Core\Interface\text.h" />
+    <ClInclude Include="src\Core\Interface\window.h" />
+    <ClInclude Include="src\Core\Interface\windowElementIntrface.h" />
     <ClInclude Include="src\Core\menuSystem.h" />
     <ClInclude Include="src\Core\observer.h" />
     <ClInclude Include="src\Core\player.h" />
